@@ -2,10 +2,4 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.woody.domain_detail">
 
-    <application>
-        <activity
-            android:name="com.woody.domain_detail.BookDetailActivity"
-            android:exported="false"
-            android:theme="@style/Theme.ModuleUi"/>
-    </application>
 </manifest>

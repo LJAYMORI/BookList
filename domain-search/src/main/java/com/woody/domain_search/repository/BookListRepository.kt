@@ -1,6 +1,6 @@
 package com.woody.domain_search.repository
 
-import com.woody.domain_search.vo.SearchResultVO
+import com.woody.module_data.vo.SearchResultVO
 import io.reactivex.Single
 
 interface BookListRepository {

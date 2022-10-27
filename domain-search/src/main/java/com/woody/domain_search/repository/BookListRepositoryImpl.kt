@@ -1,7 +1,7 @@
 package com.woody.domain_search.repository
 
 import com.woody.domain_search.datasource.BookListDataSource
-import com.woody.domain_search.vo.SearchResultVO
+import com.woody.module_data.vo.SearchResultVO
 import io.reactivex.Single
 
 class BookListRepositoryImpl(

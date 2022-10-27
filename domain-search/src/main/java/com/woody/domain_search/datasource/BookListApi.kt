@@ -1,6 +1,6 @@
 package com.woody.domain_search.datasource
 
-import com.woody.domain_search.vo.SearchResultVO
+import com.woody.module_data.vo.SearchResultVO
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query

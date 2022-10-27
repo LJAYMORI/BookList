@@ -34,8 +34,12 @@ android {
 
 dependencies {
 
+    implementation project(":module-data")
     implementation project(":module-ui")
     implementation project(":module-network")
+
+    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.ext.rxAndroidJavaVersion"
+    implementation "io.reactivex.rxjava2:rxjava:$rootProject.ext.rxJavaVersion"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

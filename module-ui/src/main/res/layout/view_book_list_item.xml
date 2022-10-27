@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+    <ImageView
+        android:id="@+id/book_list_image"
+        android:layout_width="100dp"
+        android:layout_height="120dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:scaleType="center"
+        tools:src="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/book_list_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/common_main_text"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/book_list_image"
+        app:layout_constraintTop_toTopOf="@id/book_list_image"
+        tools:text="Book Title" />
+
+    <TextView
+        android:id="@+id/book_list_author"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textColor="@color/common_main_text"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@id/book_list_title"
+        app:layout_constraintStart_toStartOf="@id/book_list_title"
+        app:layout_constraintTop_toBottomOf="@id/book_list_title"
+        tools:text="Author" />
+
+    <TextView
+        android:id="@+id/book_list_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/common_main_text"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@id/book_list_author"
+        app:layout_constraintStart_toStartOf="@id/book_list_author"
+        app:layout_constraintTop_toBottomOf="@id/book_list_author"
+        tools:text="Description" />
+
+</merge>

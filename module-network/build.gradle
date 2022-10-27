@@ -31,6 +31,8 @@ android {
 
 dependencies {
 
+    implementation "androidx.core:core-ktx:${rootProject.ext.ktxVersion}"
+
     api "com.squareup.retrofit2:retrofit:${rootProject.ext.retrofitVersion}"
     api "com.squareup.retrofit2:adapter-rxjava2:${rootProject.ext.retrofitRxJavaVersion}"
     api "com.squareup.retrofit2:converter-gson:${rootProject.ext.retrofitGsonVersion}"

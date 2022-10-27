@@ -1,4 +1,4 @@
-package com.woody.domain_search.vo
+package com.woody.module_data.vo
 
 data class SearchResultVO(
     val lastBuildDate: String,

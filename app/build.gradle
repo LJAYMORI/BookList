@@ -40,8 +40,6 @@ dependencies {
     implementation project(":domain-detail")
 
     implementation "androidx.core:core-ktx:${rootProject.ext.ktxVersion}"
-    implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.ext.navigationVersion"
-    implementation "androidx.navigation:navigation-ui-ktx:$rootProject.ext.navigationVersion"
 
     testImplementation "junit:junit:4.13.2"
     androidTestImplementation "androidx.test.ext:junit:1.1.3"
