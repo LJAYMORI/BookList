@@ -12,8 +12,8 @@ class HeaderInterceptor(
         val newRequest = oldRequest.newBuilder()
             .apply {
                 if (keepOldHeader) {
-                    val oldHeaders = oldRequest.headers()
-                    for (i in 0 until oldHeaders.size()) {
+                    val oldHeaders = oldRequest.headers
+                    for (i in 0 until oldHeaders.size) {
                         addHeader(oldHeaders.name(i), oldHeaders.value(i))
                     }
                 }

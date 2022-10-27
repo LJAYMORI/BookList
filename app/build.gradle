@@ -37,6 +37,7 @@ android {
 dependencies {
     implementation project(":module-ui")
     implementation project(":domain-search")
+    implementation project(":domain-detail")
 
     implementation "androidx.core:core-ktx:${rootProject.ext.ktxVersion}"
     implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.ext.navigationVersion"

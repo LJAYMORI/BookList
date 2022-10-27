@@ -19,6 +19,7 @@
         app:navGraph="@navigation/navigation_main_graph" />
 
     <TextView
+        android:id="@+id/test_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#a551"

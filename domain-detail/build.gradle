@@ -27,14 +27,15 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
 
-    api "com.squareup.retrofit2:retrofit:${rootProject.ext.retrofitVersion}"
-    api "com.squareup.retrofit2:adapter-rxjava2:${rootProject.ext.retrofitRxJavaVersion}"
-    api "com.squareup.retrofit2:converter-gson:${rootProject.ext.retrofitGsonVersion}"
-    implementation "com.squareup.okhttp3:logging-interceptor:${rootProject.ext.retrofitLoggingInterceptorVersion}"
+    implementation project(":module-ui")
+    implementation project(":module-network")
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

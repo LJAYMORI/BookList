@@ -21,7 +21,8 @@ ext {
     gsonVersion = "2.9.1"
     retrofitVersion = "2.9.0"
     retrofitRxJavaVersion = "2.9.0"
-    retrofitGSonVersion = "2.9.0"
+    retrofitGsonVersion = "2.9.0"
+    retrofitLoggingInterceptorVersion = "4.10.0"
 
     // RX
     rxJavaVersion = "2.2.10"
