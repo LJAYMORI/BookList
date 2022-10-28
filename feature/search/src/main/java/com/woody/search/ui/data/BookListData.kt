@@ -16,10 +16,15 @@ internal sealed class BookListData(val viewType: BookListViewType) : Parcelable 
     ) : BookListData(BookListViewType.SEARCH)
 
     data class Item(
-        val imageUrl: String,
         val title: String,
         val author: String,
-        val description: String
+        val isbn: String,
+        val price: String,
+        val image: String,
+        val publisher: String,
+        val pubdate: String,
+        val discount: String,
+        val description: String,
     ) : BookListData(BookListViewType.ITEM)
 
     data class Empty(
@@ -33,10 +38,15 @@ internal sealed class BookListData(val viewType: BookListViewType) : Parcelable 
 
 internal fun BookVO.toBookListData(): BookListData {
     return BookListData.Item(
-        imageUrl = this.image ?: "",
         title = this.title ?: "",
         author = this.author ?: "",
-        description = this.description ?: "",
+        isbn = this.isbn ?: "",
+        price = this.price ?: "",
+        image = this.image ?: "",
+        publisher = this.publisher ?: "",
+        pubdate = this.pubdate ?: "",
+        discount = this.discount ?: "",
+        description = this.description ?: ""
     )
 }
 
@@ -44,12 +54,12 @@ internal fun BookListData.Item.toBookEntity(): BookEntity {
     return BookEntity(
         title = this.title,
         author = this.author,
-        isbn = "",
-        price = "",
-        image = this.imageUrl,
-        publisher = "",
-        pubdate = "",
-        discount = "",
+        isbn = this.isbn,
+        price = this.price,
+        image = this.image,
+        publisher = this.publisher,
+        pubdate = this.pubdate,
+        discount = this.discount,
         description = this.description
     )
 }

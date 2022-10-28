@@ -1,7 +1,6 @@
-package com.woody.detail
+package com.woody.detail.navigation
 
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,14 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.woody.detail.databinding.FragmentBookDetailBinding
 import com.woody.module_ui.image.loadUrl
-import java.io.Serializable
-import kotlinx.parcelize.Parcelize
 
-class BookDetailFragment : Fragment() {
+class BookDetailNavigationFragment : Fragment() {
 
     private lateinit var binding: FragmentBookDetailBinding
 
-    private val safeArgs: BookDetailFragmentArgs by navArgs()
+    private val safeArgs: BookDetailNavigationFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,15 +36,5 @@ class BookDetailFragment : Fragment() {
             binding.bookDetailPubdate.text = args.pubdate
             binding.bookDetailDescription.text = args.description
         }
-//        (safeArgs.argsBookDetail as? Argument)?.let { args ->
-//            binding.bookDetailImage.loadUrl(args.image)
-//            binding.bookDetailTitle.text = args.title
-//            binding.bookDetailAuthor.text = args.author
-//            binding.bookDetailPrice.text = "Price: ${args.price} / Discount: ${args.discount}"
-//            binding.bookDetailPublisher.text = args.publisher
-//            binding.bookDetailIsbn.text = args.isbn
-//            binding.bookDetailPubdate.text = args.pubdate
-//            binding.bookDetailDescription.text = args.description
-//        }
     }
 }

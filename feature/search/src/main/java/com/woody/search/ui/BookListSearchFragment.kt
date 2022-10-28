@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.woody.network.HeaderInterceptor
 import com.woody.network.NetworkFactory
@@ -21,6 +22,14 @@ import io.reactivex.schedulers.Schedulers
 class BookListSearchFragment : Fragment() {
 
     companion object {
+        private const val KEY_DEFAULT_QUERY = "key_default_query"
+
+        fun newInstance(defaultQuery: String = ""): BookListSearchFragment {
+            return BookListSearchFragment().apply {
+                arguments = bundleOf(KEY_DEFAULT_QUERY to defaultQuery)
+            }
+        }
+
         private const val TAG = "BookListSearchFragment"
         private const val KEY_LAYOUT_MANAGER_SAVE_INSTANCE_STATE = "key_layout_manager_save_instance_state"
         private const val KEY_ADAPTER_LIST = "key_adapter_list"
@@ -33,12 +42,12 @@ class BookListSearchFragment : Fragment() {
                 (activity as? BookListSearchCallback)?.onClickBookItem(
                     title = data.title,
                     author = data.author,
-                    isbn = "",
-                    price = "",
-                    image = data.imageUrl,
-                    publisher = "",
-                    pubdate = "",
-                    discount = "",
+                    isbn = data.isbn,
+                    price = data.price,
+                    image = data.image,
+                    publisher = data.publisher,
+                    pubdate = data.pubdate,
+                    discount = data.discount,
                     description = data.description,
                 )
             },
@@ -71,7 +80,7 @@ class BookListSearchFragment : Fragment() {
             )
         )
 
-        repository.getBookList(query = "자바", display = 10, start = 1)
+        repository.getBookList(query = "kotlin", display = 10, start = 1)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ vo ->

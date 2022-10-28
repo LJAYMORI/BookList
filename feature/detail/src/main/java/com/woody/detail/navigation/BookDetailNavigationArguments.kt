@@ -1,10 +1,10 @@
-package com.woody.detail
+package com.woody.detail.navigation
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class BookDetailFragmentArgument(
+data class BookDetailNavigationArguments(
     val title: String,
     val author: String,
     val isbn: String,

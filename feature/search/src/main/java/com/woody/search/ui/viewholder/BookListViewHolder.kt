@@ -30,7 +30,7 @@ internal abstract class BookListViewHolder(itemView: View) : RecyclerView.ViewHo
         override fun onBindView(data: BookListData) {
             this.data = (data as? BookListData.Item) ?: return
             with(binding.bookListItem) {
-                updateImage(data.imageUrl)
+                updateImage(data.image)
                 updateTitle(data.title)
                 updateAuthor(data.author)
                 updateDescription(data.description)

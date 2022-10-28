@@ -1,35 +1,81 @@
 package com.woody.booklist
 
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.fragment.app.commit
 import com.woody.booklist.databinding.ActivityMainBinding
-import com.woody.detail.BookDetailFragment
-import com.woody.detail.BookDetailFragmentArgs
-import com.woody.detail.BookDetailFragmentArgument
+import com.woody.bookmark.BookmarkFragment
+import com.woody.detail.BookDetailActivity
+import com.woody.detail.navigation.BookDetailFragment
 import com.woody.search.BookListSearchCallback
+import com.woody.search.ui.BookListSearchFragment
 
 class MainActivity : AppCompatActivity(), BookListSearchCallback {
 
+    companion object {
+        private const val TAG_SEARCH_LIST_FRAGMENT = "tag_search_list_fragment"
+        private const val TAG_BOOKMARK_FRAGMENT = "tag_bookmark_fragment"
+    }
+
+    private val viewModel: MainViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
-    private val navController: NavController
-        get() {
-            val navFragment = supportFragmentManager
-                .findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
-            return navFragment.navController
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.bottomNavigation.setupWithNavController(navController)
-        setupActionBarWithNavController(navController)
+        if (savedInstanceState == null) {
+            initView()
+        }
+        initViewModel()
+    }
+
+    private fun initView() {
+        binding.bottomNavigation.setOnItemSelectedListener { menuItem ->
+            return@setOnItemSelectedListener when (menuItem.itemId) {
+                R.id.menu_bottom_navigation_search -> {
+                    val fragment =
+                        supportFragmentManager.findFragmentByTag(TAG_SEARCH_LIST_FRAGMENT)
+                            ?: BookListSearchFragment.newInstance("")
+                    supportFragmentManager.commit {
+                        replace(
+                            R.id.main_fragment_container,
+                            fragment,
+                            TAG_SEARCH_LIST_FRAGMENT
+                        )
+                        setReorderingAllowed(true)
+                        addToBackStack(TAG_SEARCH_LIST_FRAGMENT)
+                    }
+                    true
+                }
+                R.id.menu_bottom_navigation_bookmark -> {
+                    val fragment = supportFragmentManager.findFragmentByTag(TAG_BOOKMARK_FRAGMENT)
+                        ?: BookmarkFragment.newInstance()
+                    supportFragmentManager.commit {
+                        replace(
+                            R.id.main_fragment_container,
+                            fragment,
+                            TAG_BOOKMARK_FRAGMENT
+                        )
+                        setReorderingAllowed(true)
+                        addToBackStack(TAG_BOOKMARK_FRAGMENT)
+                    }
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
+        }
+    }
+
+    private fun initViewModel() {
+        viewModel.helloLiveData.observe(this) {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onClickBookItem(
@@ -43,10 +89,10 @@ class MainActivity : AppCompatActivity(), BookListSearchCallback {
         discount: String,
         description: String
     ) {
-        navController.navigate(
-            resId = R.id.action_book_list_search_fragment_to_bookDetailFragment,
-            args = bundleOf(
-                "args_book_detail" to BookDetailFragmentArgument(
+        startActivity(
+            BookDetailActivity.newIntent(
+                this,
+                BookDetailFragment.Args(
                     title = title,
                     author = author,
                     isbn = isbn,
@@ -60,4 +106,5 @@ class MainActivity : AppCompatActivity(), BookListSearchCallback {
             )
         )
     }
+
 }
