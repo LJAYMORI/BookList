@@ -14,8 +14,9 @@ dependencyResolutionManagement {
 }
 rootProject.name = "BookList"
 include ':app'
-include ':module-network'
-include ':module-ui'
-include ':domain-search'
-include ':domain-detail'
-include ':module-data'
+include ':feature:search'
+include ':feature:detail'
+include ':core:network'
+include ':core:ui'
+include ':core:data'
+include ':feature:bookmark'

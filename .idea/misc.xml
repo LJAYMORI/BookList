@@ -3,13 +3,18 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2677083333333333" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.24050632911392406" />
+        <entry key="app/src/main/res/layout/fragment_test.xml" value="0.2677083333333333" />
+        <entry key="app/src/main/res/menu/menu_bottom_navigation.xml" value="0.2677083333333333" />
         <entry key="domain-detail/src/main/res/layout/activity_book_detail.xml" value="0.2677083333333333" />
         <entry key="domain-detail/src/main/res/layout/fragment_book_detail.xml" value="0.2677083333333333" />
         <entry key="domain-detail/src/main/res/layout/item_book_list.xml" value="0.2677083333333333" />
         <entry key="domain-search/src/main/res/layout/fragment_book_list_search.xml" value="0.2677083333333333" />
         <entry key="domain-search/src/main/res/layout/fragment_book_store_search.xml" value="0.2677083333333333" />
+        <entry key="domain-search/src/main/res/layout/fragment_test2.xml" value="0.2677083333333333" />
         <entry key="domain-search/src/main/res/layout/item_book_list.xml" value="0.2677083333333333" />
+        <entry key="feature/detail/src/main/res/layout/fragment_book_detail.xml" value="0.12239583333333333" />
+        <entry key="feature/search/src/main/res/layout/fragment_test2.xml" value="0.2677083333333333" />
         <entry key="module-ui/src/main/res/layout/view_book_list_item.xml" value="0.2677083333333333" />
       </map>
     </option>

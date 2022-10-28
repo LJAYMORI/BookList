@@ -3,23 +3,33 @@ package com.woody.booklist
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
-import androidx.navigation.findNavController
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.woody.booklist.databinding.ActivityMainBinding
-import com.woody.domain_detail.BookDetailFragment
-import com.woody.domain_search.BookListSearchCallback
+import com.woody.detail.BookDetailFragment
+import com.woody.detail.BookDetailFragmentArgs
+import com.woody.detail.BookDetailFragmentArgument
+import com.woody.search.BookListSearchCallback
 
 class MainActivity : AppCompatActivity(), BookListSearchCallback {
 
     private lateinit var binding: ActivityMainBinding
+    private val navController: NavController
+        get() {
+            val navFragment = supportFragmentManager
+                .findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
+            return navFragment.navController
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        val navFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-//        val navController = navFragment.navController
-//        navController.setGraph(R.navigation.navigation_main_graph)
+        binding.bottomNavigation.setupWithNavController(navController)
+        setupActionBarWithNavController(navController)
     }
 
     override fun onClickBookItem(
@@ -33,10 +43,10 @@ class MainActivity : AppCompatActivity(), BookListSearchCallback {
         discount: String,
         description: String
     ) {
-        findNavController(R.id.nav_host_fragment).navigate(
-            resId = R.id.action_book_list_search_to_book_detail,
+        navController.navigate(
+            resId = R.id.action_book_list_search_fragment_to_bookDetailFragment,
             args = bundleOf(
-                "args_book_detail_image" to BookDetailFragment.Argument(
+                "args_book_detail" to BookDetailFragmentArgument(
                     title = title,
                     author = author,
                     isbn = isbn,
@@ -50,5 +60,4 @@ class MainActivity : AppCompatActivity(), BookListSearchCallback {
             )
         )
     }
-
 }

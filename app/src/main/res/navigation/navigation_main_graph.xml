@@ -7,15 +7,25 @@
 
     <fragment
         android:id="@+id/book_list_search_fragment"
-        android:name="com.woody.domain_search.ui.BookListSearchFragment"
+        android:name="com.woody.search.ui.BookListSearchFragment"
         android:label="@string/navigation_book_search"
         tools:layout="@layout/fragment_book_list_search">
-
         <action
-            android:id="@+id/action_book_list_search_to_book_detail"
+            android:id="@+id/action_book_list_search_fragment_to_bookDetailFragment"
             app:destination="@id/navigation_book_detail_graph" />
-
     </fragment>
+
+    <!--<fragment
+        android:id="@+id/book_detail_fragment2"
+        android:name="com.woody.detail.BookDetailFragment"
+        android:label="@string/navigation_book_detail"
+        tools:layout="@layout/fragment_book_detail">
+        <argument
+            android:name="args_book_detail"
+            android:defaultValue="@null"
+            app:argType="com.woody.detail.BookDetailFragment$Argument"
+            app:nullable="true" />
+    </fragment>-->
 
     <include app:graph="@navigation/navigation_book_detail_graph" />
 
