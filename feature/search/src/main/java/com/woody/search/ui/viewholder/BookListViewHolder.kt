@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.woody.search.databinding.ItemBookListBinding
 import com.woody.search.ui.data.BookListData
 
-internal abstract class BookListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+abstract class BookListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     abstract fun onBindView(data: BookListData)
 
     class Search(itemView: View) : BookListViewHolder(itemView) {

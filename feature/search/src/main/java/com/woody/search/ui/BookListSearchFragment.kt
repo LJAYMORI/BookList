@@ -1,23 +1,15 @@
 package com.woody.search.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import com.woody.network.HeaderInterceptor
-import com.woody.network.NetworkFactory
 import com.woody.search.BookListSearchCallback
 import com.woody.search.databinding.FragmentBookListSearchBinding
-import com.woody.search.datasource.BookListApi
-import com.woody.search.datasource.BookListRemoteDataSource
-import com.woody.search.repository.BookListRepositoryImpl
 import com.woody.search.ui.adapter.BookListAdapter
-import com.woody.search.ui.data.toBookListData
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BookListSearchFragment : Fragment() {
 
@@ -36,6 +28,7 @@ class BookListSearchFragment : Fragment() {
     }
 
     private lateinit var binding: FragmentBookListSearchBinding
+    private val viewModel: BookListSearchViewModel by viewModel()
     private val adapter: BookListAdapter by lazy {
         BookListAdapter(
             onItemClickAction = { data ->
@@ -71,27 +64,15 @@ class BookListSearchFragment : Fragment() {
 
         binding.bookListSearchRecyclerView.adapter = adapter
 
-        val repository = BookListRepositoryImpl(
-            BookListRemoteDataSource(
-                NetworkFactory.create(
-                    baseUrl = "https://openapi.naver.com/",
-                    HeaderInterceptor(hashMapOf("X-Naver-Client-Id" to "KiXBNHcPVH9OxOqLAkio", "X-Naver-Client-Secret" to "l5iWGZAZmt"))
-                ).create(BookListApi::class.java)
-            )
-        )
+        initViewModel()
+    }
 
-        repository.getBookList(query = "kotlin", display = 10, start = 1)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ vo ->
-                vo.items
-                    ?.map { it.toBookListData() }
-                    ?.let { list ->
-                        adapter.setItems(list)
-                    }
-            }, { e ->
-                Log.e(TAG, "", e)
-            })
+    private fun initViewModel() {
+        viewModel.searchBookListLiveData.observe(viewLifecycleOwner) { list ->
+            adapter.setItems(list)
+        }
+
+        viewModel.search(arguments?.getString(KEY_DEFAULT_QUERY) ?: "kotlin")
     }
 
 //    override fun onSaveInstanceState(outState: Bundle) {

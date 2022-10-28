@@ -26,9 +26,12 @@ ext {
     targetSdkVersion = 32
 
     // Kotlin
-    ktxVersion = "1.8.0"
+    ktxVersion = "1.7.0"
 
-    // Network
+    // Koin - DI
+    koinVersion= "3.2.2"
+
+    // Retrofit - Network
     gsonVersion = "2.9.1"
     retrofitVersion = "2.9.0"
     retrofitRxJavaVersion = "2.9.0"
@@ -39,7 +42,7 @@ ext {
     rxJavaVersion = "2.2.10"
     rxAndroidJavaVersion = "2.1.1"
 
-    // Image
+    // Glide - Image
     glideVersion = "4.13.0"
 
     // UI

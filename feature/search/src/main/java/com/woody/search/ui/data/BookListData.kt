@@ -1,16 +1,18 @@
 package com.woody.search.ui.data
 
 import android.os.Parcelable
-import com.woody.module_data.entity.BookEntity
-import com.woody.module_data.vo.BookVO
+import com.woody.data.entity.BookEntity
+import com.woody.data.entity.SearchResultEntity
+import com.woody.network.vo.BookVO
+import io.reactivex.Single
 import kotlinx.parcelize.Parcelize
 
-internal enum class BookListViewType {
+enum class BookListViewType {
     SEARCH, ITEM, EMPTY, UNKNOWN
 }
 
 @Parcelize
-internal sealed class BookListData(val viewType: BookListViewType) : Parcelable {
+sealed class BookListData(val viewType: BookListViewType) : Parcelable {
     data class Search(
         val defaultQuery: String
     ) : BookListData(BookListViewType.SEARCH)
@@ -28,7 +30,7 @@ internal sealed class BookListData(val viewType: BookListViewType) : Parcelable 
     ) : BookListData(BookListViewType.ITEM)
 
     data class Empty(
-        val emptyMessage: String
+        val emptyMessage: String = ""
     ) : BookListData(BookListViewType.EMPTY)
 
     data class Unknown(
@@ -36,30 +38,22 @@ internal sealed class BookListData(val viewType: BookListViewType) : Parcelable 
     ) : BookListData(BookListViewType.UNKNOWN)
 }
 
-internal fun BookVO.toBookListData(): BookListData {
-    return BookListData.Item(
-        title = this.title ?: "",
-        author = this.author ?: "",
-        isbn = this.isbn ?: "",
-        price = this.price ?: "",
-        image = this.image ?: "",
-        publisher = this.publisher ?: "",
-        pubdate = this.pubdate ?: "",
-        discount = this.discount ?: "",
-        description = this.description ?: ""
-    )
-}
-
-internal fun BookListData.Item.toBookEntity(): BookEntity {
-    return BookEntity(
-        title = this.title,
-        author = this.author,
-        isbn = this.isbn,
-        price = this.price,
-        image = this.image,
-        publisher = this.publisher,
-        pubdate = this.pubdate,
-        discount = this.discount,
-        description = this.description
-    )
+fun Single<Result<SearchResultEntity>>.transformToBookListData(): Single<List<BookListData>> {
+    return this.map { result ->
+        result.getOrNull()?.let { entity ->
+            entity.items.map { bookEntity ->
+                BookListData.Item(
+                    title = bookEntity.title,
+                    author = bookEntity.author,
+                    isbn = bookEntity.isbn,
+                    price = bookEntity.price,
+                    image = bookEntity.image,
+                    publisher = bookEntity.publisher,
+                    pubdate = bookEntity.pubdate,
+                    discount = bookEntity.discount,
+                    description = bookEntity.description
+                )
+            }
+        } ?: arrayListOf(BookListData.Empty())
+    }
 }

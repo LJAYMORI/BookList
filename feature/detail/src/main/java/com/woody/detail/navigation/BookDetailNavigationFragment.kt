@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.woody.detail.databinding.FragmentBookDetailBinding
-import com.woody.module_ui.image.loadUrl
+import com.woody.ui.image.loadUrl
 
 class BookDetailNavigationFragment : Fragment() {
 

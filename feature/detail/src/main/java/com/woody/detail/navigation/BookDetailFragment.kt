@@ -9,7 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.woody.detail.R
 import com.woody.detail.databinding.FragmentBookDetailBinding
-import com.woody.module_ui.image.loadUrl
+import com.woody.ui.image.loadUrl
 import com.woody.util.toCurrency
 import kotlinx.parcelize.Parcelize
 

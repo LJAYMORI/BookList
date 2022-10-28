@@ -9,7 +9,7 @@ import com.woody.search.ui.data.BookListData
 import com.woody.search.ui.data.BookListViewType
 import com.woody.search.ui.viewholder.BookListViewHolder
 
-internal class BookListAdapter(
+class BookListAdapter(
     private val onItemClickAction: (BookListData.Item) -> Unit,
     private val onEmptyClickAction: (BookListData.Empty) -> Unit
 ) : RecyclerView.Adapter<BookListViewHolder>() {
