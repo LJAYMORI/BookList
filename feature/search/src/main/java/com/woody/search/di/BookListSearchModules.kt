@@ -2,8 +2,11 @@ package com.woody.search.di
 
 import com.woody.data.datasource.BookListDataSource
 import com.woody.data.datasource.BookListRemoteDataSource
+import com.woody.data.entity.QueryParamEntity
 import com.woody.data.repository.BookListRepository
 import com.woody.data.repository.BookListRepositoryImpl
+import com.woody.data.repository.QueryPaginationParamRepository
+import com.woody.data.repository.QueryPaginationParamRepositoryImpl
 import com.woody.domain.usecase.GetBookListUseCase
 import com.woody.network.api.BookListApi
 import com.woody.network.retrofit.HeaderInterceptor
@@ -34,7 +37,17 @@ val bookListSearchModules = module {
 
     factory<BookListRepository> { BookListRepositoryImpl(remote = get()) }
 
-    factory { GetBookListUseCase(schedulerProvider = get(), repository = get()) }
+    factory { QueryParamEntity(query = "", displayCount = 10, pageNumber = 1) }
+
+    factory<QueryPaginationParamRepository> { QueryPaginationParamRepositoryImpl(param = get()) }
+
+    factory {
+        GetBookListUseCase(
+            schedulerProvider = get(),
+            bookListRepository = get(),
+            queryParamRepository = get()
+        )
+    }
 
     viewModel { BookListSearchViewModel(getBookListUseCase = get()) }
 }

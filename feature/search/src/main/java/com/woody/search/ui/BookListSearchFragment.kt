@@ -9,10 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ConcatAdapter
+import com.woody.search.BookListSearchCallback
 import com.woody.search.R
 import com.woody.search.databinding.FragmentBookListSearchBinding
 import com.woody.ui.adapter.BookListAdapter
 import com.woody.ui.adapter.InputListAdapter
+import com.woody.util.NotifyPositionScrollListener
 import com.woody.util.hideKeyboard
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -45,8 +47,18 @@ class BookListSearchFragment : Fragment() {
 
     private val bookListAdapter: BookListAdapter by lazy {
         BookListAdapter(
-            itemClickAction = { isbn ->
-                viewModel.onClickItem(isbn)
+            itemClickAction = { data ->
+                (activity as? BookListSearchCallback)?.onClickBookItem(
+                    title = data.title,
+                    author = data.author,
+                    isbn = data.isbn,
+                    price = data.price,
+                    image = data.image,
+                    publisher = data.publisher,
+                    pubdate = data.pubdate,
+                    discount = data.discount,
+                    description = data.description,
+                )
             }
         )
     }
@@ -79,11 +91,20 @@ class BookListSearchFragment : Fragment() {
         )
 
         binding.bookListSearchRecyclerView.adapter = ConcatAdapter(inputAdapter, bookListAdapter)
+        binding.bookListSearchRecyclerView.addOnScrollListener(
+            NotifyPositionScrollListener {
+                viewModel.requestNextPage()
+            }
+        )
     }
 
     private fun initViewModel() {
-        viewModel.searchBookListLiveData.observe { list ->
+        viewModel.firstPageLiveData.observe { list ->
             bookListAdapter.setItems(list)
+        }
+
+        viewModel.nextPageLiveData.observe { list ->
+            bookListAdapter.addItems(list)
         }
 
         viewModel.hideKeyboardLiveData.observe {

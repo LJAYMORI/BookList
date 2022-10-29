@@ -5,26 +5,32 @@ import com.woody.ui.databinding.ItemBookBinding
 
 class BookListItemViewHolder(
     private val binding: ItemBookBinding,
-    itemClickAction: (String) -> Unit
+    itemClickAction: (Data) -> Unit
 ) : BaseViewHolder<BookListItemViewHolder.Data>(binding.root) {
 
     data class Data(
         override val viewType: BookListAdapter.ViewType = BookListAdapter.ViewType.BOOK,
-        val isbn: String,
-        val image: String,
         val title: String,
+        val author: String,
+        val isbn: String,
+        val price: String,
+        val image: String,
+        val publisher: String,
+        val pubdate: String,
+        val discount: String,
         val description: String,
-        val author: String
     ):BookListAdapter.BookListData
 
-    private var isbn: String? = null
+    private var data: Data? = null
 
     init {
-        isbn?.let(itemClickAction)
+        itemView.setOnClickListener {
+            data?.let(itemClickAction)
+        }
     }
 
     override fun onBindViewHolder(data: Data) {
-        isbn = data.isbn
+        this.data = data
         with (binding.bookListItem) {
             updateImage(data.image)
             updateTitle(data.title)

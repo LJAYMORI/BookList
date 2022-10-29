@@ -11,7 +11,7 @@ import com.woody.ui.viewholder.EmptyViewHolder
 import com.woody.ui.viewholder.BookListMessageViewHolder
 
 class BookListAdapter(
-    private val itemClickAction: (String) -> Unit
+    private val itemClickAction: (BookListItemViewHolder.Data) -> Unit
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
     enum class ViewType {
@@ -27,13 +27,12 @@ class BookListAdapter(
     fun setItems(list: List<BookListData>) {
         items.clear()
         items.addAll(list)
-        notifyItemRangeChanged(0, list.size)
+        notifyDataSetChanged()
     }
 
     fun addItems(list: List<BookListData>) {
-        val startIndex = items.size
         items.addAll(list)
-        notifyItemRangeChanged(startIndex, items.size)
+        notifyDataSetChanged()
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -48,13 +47,17 @@ class BookListAdapter(
         return when (ViewType.values()[viewType]) {
             ViewType.BOOK -> {
                 BookListItemViewHolder(
-                    binding = ItemBookBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+                    binding = ItemBookBinding.inflate(
+                        LayoutInflater.from(parent.context), parent, false
+                    ),
                     itemClickAction = itemClickAction
                 )
             }
             ViewType.EMPTY -> {
                 BookListMessageViewHolder(
-                    binding = ItemMessageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                    binding = ItemMessageBinding.inflate(
+                        LayoutInflater.from(parent.context), parent, false
+                    )
                 )
             }
             ViewType.UNKNOWN -> {

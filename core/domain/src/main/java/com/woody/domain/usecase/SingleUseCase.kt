@@ -1,9 +1,11 @@
 package com.woody.domain.usecase
 
-import com.woody.util.SchedulerProvider
+import io.reactivex.disposables.Disposable
 
-class SingleUseCase<P, R>(
-    private val schedulers: SchedulerProvider
-) {
+abstract class SingleUseCase {
+    protected var disposable: Disposable? = null
 
+    fun isDisposed(): Boolean {
+        return disposable?.isDisposed ?: true
+    }
 }

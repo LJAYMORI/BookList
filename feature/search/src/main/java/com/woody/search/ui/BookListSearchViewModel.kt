@@ -19,13 +19,18 @@ class BookListSearchViewModel constructor(
     private val getBookListUseCase: GetBookListUseCase
 ) : ViewModel() {
 
-    private val _searchBookListLiveData = MutableLiveData<List<BookListAdapter.BookListData>>()
-    val searchBookListLiveData: LiveData<List<BookListAdapter.BookListData>> = _searchBookListLiveData
+    private val _firstPageLiveData = MutableLiveData<List<BookListAdapter.BookListData>>()
+    val firstPageLiveData: LiveData<List<BookListAdapter.BookListData>> = _firstPageLiveData
+
+    private val _nextPageLiveData = MutableLiveData<List<BookListAdapter.BookListData>>()
+    val nextPageLiveData: LiveData<List<BookListAdapter.BookListData>> = _nextPageLiveData
 
     private val _hideKeyboardLiveData = MutableLiveData<Unit>()
     val hideKeyboardLiveData: LiveData<Unit> = _hideKeyboardLiveData
 
     private val querySubject = PublishSubject.create<String>()
+    private val requestNextPageSubject = PublishSubject.create<Unit>()
+
     private val disposable = CompositeDisposable()
 
     init {
@@ -37,10 +42,22 @@ class BookListSearchViewModel constructor(
                     .transformToBookListData()
             }
             .subscribe({ list ->
-                _searchBookListLiveData.value = list
+                _firstPageLiveData.value = list
                 _hideKeyboardLiveData.value = Unit
             }, { e ->
-                Log.e("asdf", "", e)
+                Log.e("querySubject", "", e)
+            })
+            .let { disposable.add(it) }
+
+        requestNextPageSubject.filter { getBookListUseCase.isDisposed() }
+            .flatMapSingle {
+                getBookListUseCase.invoke()
+                    .transformToBookListData()
+            }
+            .subscribe({ list ->
+                _nextPageLiveData.value = list
+            }, { e ->
+                Log.e("requestNextPageSubject", "", e)
             })
             .let { disposable.add(it) }
     }
@@ -54,9 +71,10 @@ class BookListSearchViewModel constructor(
         querySubject.onNext(query)
     }
 
-    fun onClickItem(isbn: String) {
-
+    fun requestNextPage() {
+        requestNextPageSubject.onNext(Unit)
     }
+
 }
 
 @WorkerThread
@@ -68,11 +86,11 @@ internal fun Single<Result<SearchResultEntity>>.transformToBookListData(): Singl
                     title = bookEntity.title,
                     author = bookEntity.author,
                     isbn = bookEntity.isbn,
-//                    price = bookEntity.price,
+                    price = bookEntity.price,
                     image = bookEntity.image,
-//                    publisher = bookEntity.publisher,
-//                    pubdate = bookEntity.pubdate,
-//                    discount = bookEntity.discount,
+                    publisher = bookEntity.publisher,
+                    pubdate = bookEntity.pubdate,
+                    discount = bookEntity.discount,
                     description = bookEntity.description
                 )
             }
