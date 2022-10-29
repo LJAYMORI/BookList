@@ -33,6 +33,8 @@ dependencies {
 
     implementation "androidx.core:core-ktx:${rootProject.ext.ktxVersion}"
 
+    implementation "androidx.appcompat:appcompat:${rootProject.ext.appcompatVersion}"
+
     implementation "io.reactivex.rxjava2:rxandroid:${rootProject.ext.rxAndroidJavaVersion}"
     implementation "io.reactivex.rxjava2:rxjava:${rootProject.ext.rxJavaVersion}"
 

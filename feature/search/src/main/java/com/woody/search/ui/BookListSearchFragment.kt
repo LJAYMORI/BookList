@@ -6,9 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import com.woody.search.BookListSearchCallback
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.ConcatAdapter
+import com.woody.search.R
 import com.woody.search.databinding.FragmentBookListSearchBinding
-import com.woody.search.ui.adapter.BookListAdapter
+import com.woody.ui.adapter.BookListAdapter
+import com.woody.ui.adapter.InputListAdapter
+import com.woody.util.hideKeyboard
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BookListSearchFragment : Fragment() {
@@ -16,7 +21,7 @@ class BookListSearchFragment : Fragment() {
     companion object {
         private const val KEY_DEFAULT_QUERY = "key_default_query"
 
-        fun newInstance(defaultQuery: String = ""): BookListSearchFragment {
+        fun newInstance(defaultQuery: String = "kotlin"): BookListSearchFragment {
             return BookListSearchFragment().apply {
                 arguments = bundleOf(KEY_DEFAULT_QUERY to defaultQuery)
             }
@@ -29,23 +34,19 @@ class BookListSearchFragment : Fragment() {
 
     private lateinit var binding: FragmentBookListSearchBinding
     private val viewModel: BookListSearchViewModel by viewModel()
-    private val adapter: BookListAdapter by lazy {
-        BookListAdapter(
-            onItemClickAction = { data ->
-                (activity as? BookListSearchCallback)?.onClickBookItem(
-                    title = data.title,
-                    author = data.author,
-                    isbn = data.isbn,
-                    price = data.price,
-                    image = data.image,
-                    publisher = data.publisher,
-                    pubdate = data.pubdate,
-                    discount = data.discount,
-                    description = data.description,
-                )
-            },
-            onEmptyClickAction = {
 
+    private val inputAdapter: InputListAdapter by lazy {
+        InputListAdapter(
+            textChangedAction = { query ->
+                viewModel.search(query)
+            }
+        )
+    }
+
+    private val bookListAdapter: BookListAdapter by lazy {
+        BookListAdapter(
+            itemClickAction = { isbn ->
+                viewModel.onClickItem(isbn)
             }
         )
     }
@@ -61,29 +62,36 @@ class BookListSearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (savedInstanceState == null) {
+            initView()
+            initViewModel()
+        }
+    }
 
-        binding.bookListSearchRecyclerView.adapter = adapter
+    private fun initView() {
+        val defaultQuery = arguments?.getString(KEY_DEFAULT_QUERY) ?: ""
+        if (defaultQuery.isNotEmpty()) {
+            arguments?.remove(KEY_DEFAULT_QUERY)
+        }
+        inputAdapter.init(
+            query = defaultQuery,
+            hint = getString(R.string.book_list_input_hint)
+        )
 
-        initViewModel()
+        binding.bookListSearchRecyclerView.adapter = ConcatAdapter(inputAdapter, bookListAdapter)
     }
 
     private fun initViewModel() {
-        viewModel.searchBookListLiveData.observe(viewLifecycleOwner) { list ->
-            adapter.setItems(list)
+        viewModel.searchBookListLiveData.observe { list ->
+            bookListAdapter.setItems(list)
         }
 
-        viewModel.search(arguments?.getString(KEY_DEFAULT_QUERY) ?: "kotlin")
+        viewModel.hideKeyboardLiveData.observe {
+            hideKeyboard()
+        }
     }
 
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        super.onSaveInstanceState(outState)
-//        outState.putParcelable(
-//            KEY_LAYOUT_MANAGER_SAVE_INSTANCE_STATE,
-//            binding.bookListSearchRecyclerView.layoutManager?.onSaveInstanceState()
-//        )
-//        outState.putParcelableArrayList(
-//            KEY_ADAPTER_LIST,
-//            arrayListOf(*adapter.list.toTypedArray())
-//        )
-//    }
+    private fun <T> LiveData<T>.observe(observer: Observer<in T>) {
+        this.observe(viewLifecycleOwner, observer)
+    }
 }

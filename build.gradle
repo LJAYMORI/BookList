@@ -50,5 +50,5 @@ ext {
     appcompatVersion = "1.5.1"
     constraintLayoutVersion = "2.1.4"
     materialVersion = "1.7.0"
-    navigationVersion = "2.5.2"
+    recyclerViewVersion = "1.2.1"
 }

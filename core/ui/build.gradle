@@ -39,6 +39,7 @@ dependencies {
     api "androidx.appcompat:appcompat:${rootProject.ext.appcompatVersion}"
     api "com.google.android.material:material:${rootProject.ext.materialVersion}"
     api "androidx.constraintlayout:constraintlayout:${rootProject.ext.constraintLayoutVersion}"
+    api "androidx.recyclerview:recyclerview:${rootProject.ext.recyclerViewVersion}"
 
     // Navigation
     api "androidx.navigation:navigation-fragment-ktx:$rootProject.ext.navigationVersion"
