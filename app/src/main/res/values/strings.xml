@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">BookList</string>
 
-    <string name="navigation_book_search">Book List Search</string>
+    <string name="navigation_book_search">Book Search</string>
     <string name="navigation_book_detail">Book Detail</string>
-    <string name="navigation_book_bookmark">Book Bookmark</string>
+    <string name="navigation_book_bookmark">Bookmarks</string>
 
     <string name="menu_bottom_navigation_search">Search</string>
     <string name="menu_bottom_navigation_bookmarks">Bookmarks</string>

@@ -3,18 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_main_graph"
-    app:startDestination="@id/book_list_search_fragment">
+    app:startDestination="@id/navigation_bookListSearchFragment">
 
     <fragment
-        android:id="@+id/book_list_search_fragment"
+        android:id="@+id/navigation_bookListSearchFragment"
         android:name="com.woody.search.ui.BookListSearchFragment"
         android:label="@string/navigation_book_search"
-        tools:layout="@layout/fragment_book_list_search">
-        <action
-            android:id="@+id/action_book_list_search_fragment_to_bookDetailFragment"
-            app:destination="@id/navigation_book_detail_graph" />
-    </fragment>
+        tools:layout="@layout/fragment_book_list_search" />
 
-    <include app:graph="@navigation/navigation_book_detail_graph" />
+    <fragment
+        android:id="@+id/navigation_bookmarkFragment"
+        android:name="com.woody.bookmark.BookmarkFragment"
+        android:label="@string/navigation_book_bookmark"
+        tools:layout="@layout/fragment_bookmark" />
 
 </navigation>

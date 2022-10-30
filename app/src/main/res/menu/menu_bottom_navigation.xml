@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/menu_bottom_navigation_search"
+        android:id="@+id/navigation_bookListSearchFragment"
         android:icon="@drawable/ic_search"
         android:title="@string/menu_bottom_navigation_search" />
     <item
-        android:id="@+id/menu_bottom_navigation_bookmark"
+        android:id="@+id/navigation_bookmarkFragment"
         android:icon="@drawable/ic_bookmark_outline"
         android:title="@string/menu_bottom_navigation_bookmarks" />
 </menu>

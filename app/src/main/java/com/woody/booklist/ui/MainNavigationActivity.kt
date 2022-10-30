@@ -2,14 +2,12 @@ package com.woody.booklist.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.woody.booklist.R
 import com.woody.booklist.databinding.ActivityMainNavigationBinding
-import com.woody.detail.navigation.BookDetailNavigationArguments
 import com.woody.search.BookListSearchCallback
 
 class MainNavigationActivity : AppCompatActivity(), BookListSearchCallback {
@@ -41,7 +39,7 @@ class MainNavigationActivity : AppCompatActivity(), BookListSearchCallback {
         discount: String,
         description: String
     ) {
-        navController.navigate(
+        /*navController.navigate(
             resId = R.id.action_book_list_search_fragment_to_bookDetailFragment,
             args = bundleOf(
                 "args_book_detail" to BookDetailNavigationArguments(
@@ -56,6 +54,6 @@ class MainNavigationActivity : AppCompatActivity(), BookListSearchCallback {
                     description = description
                 )
             )
-        )
+        )*/
     }
 }
