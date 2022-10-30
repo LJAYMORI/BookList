@@ -7,13 +7,12 @@
 
     <fragment
         android:id="@+id/bookDetailFragment"
-        android:name="com.woody.detail.BookDetailFragment"
+        android:name="com.woody.detail.navigation.BookDetailNavigationFragment"
         android:label="BookDetailFragment"
         tools:layout="@layout/fragment_book_detail">
         <argument
             android:name="args_book_detail"
-            android:defaultValue="@null"
-            app:argType="com.woody.detail.BookDetailFragmentArgument"
+            app:argType="com.woody.detail.navigation.BookDetailNavigationArguments"
             app:nullable="true" />
     </fragment>
 </navigation>

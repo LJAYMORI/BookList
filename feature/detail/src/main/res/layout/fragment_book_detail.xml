@@ -8,30 +8,32 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
         android:background="@color/common_main_background">
 
         <ImageView
             android:id="@+id/book_detail_image"
-            android:layout_width="180dp"
-            android:layout_height="260dp"
+            android:layout_width="165dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/book_detail_bottom_barrier"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/book_detail_title"
             tools:src="@tools:sample/avatars" />
 
         <TextView
             android:id="@+id/book_detail_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:textColor="@color/common_main_text"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/book_detail_image"
-            app:layout_constraintTop_toTopOf="@id/book_detail_image"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Title" />
 
         <TextView
@@ -65,7 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textColor="@color/common_main_text"
-            android:textSize="16sp"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@id/book_detail_price"
             app:layout_constraintStart_toStartOf="@id/book_detail_price"
             app:layout_constraintTop_toBottomOf="@id/book_detail_price"
@@ -77,7 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textColor="@color/common_main_text"
-            android:textSize="16sp"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@id/book_detail_publisher"
             app:layout_constraintStart_toStartOf="@id/book_detail_publisher"
             app:layout_constraintTop_toBottomOf="@id/book_detail_publisher"
@@ -89,14 +91,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textColor="@color/common_main_text"
-            android:textSize="16sp"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="@id/book_detail_isbn"
             app:layout_constraintStart_toStartOf="@id/book_detail_isbn"
             app:layout_constraintTop_toBottomOf="@id/book_detail_isbn"
             tools:text="Pubupdate" />
 
         <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/book_detail_image_and_info_barrier"
+            android:id="@+id/book_detail_bottom_barrier"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:barrierDirection="bottom"
@@ -106,8 +108,7 @@
             android:id="@+id/book_detail_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="16dp"
             android:lineSpacingMultiplier="1.2"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
@@ -116,7 +117,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/book_detail_image_and_info_barrier"
+            app:layout_constraintTop_toBottomOf="@id/book_detail_bottom_barrier"
             tools:text="@tools:sample/lorem/random" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

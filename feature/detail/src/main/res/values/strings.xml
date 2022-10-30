@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="detail_invalid_arguments">The BookDetailFragment.Args object have to not null</string>
+    <string name="detail_price_s">Price: %s won</string>
+    <string name="detail_has_no_price">Has No Price</string>
+    <string name="detail_isbn_s">ISBN: %s</string>
+    <string name="detail_publish_date_s">Published at: %s</string>
+</resources>
