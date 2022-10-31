@@ -15,7 +15,6 @@
         android:theme="@style/Theme.BookList">
         <activity
             android:name="com.woody.booklist.ui.MainActivity"
-            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,9 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".ui.MainNavigationActivity" />
-
     </application>
 
 </manifest>

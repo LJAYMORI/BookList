@@ -1,10 +1,8 @@
 package com.woody.data.entity
 
-import android.os.Parcelable
+import com.woody.database.entity.BookmarkedBook
 import com.woody.network.vo.BookVO
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
 data class BookEntity(
     val title: String,
     val author: String,
@@ -15,7 +13,35 @@ data class BookEntity(
     val pubdate: String,
     val discount: String,
     val description: String
-) : Parcelable
+)
+
+fun BookEntity.toBookmarkedBook(): BookmarkedBook {
+    return BookmarkedBook(
+        title = title,
+        author = author,
+        isbn = isbn,
+        price = price,
+        image = image,
+        publisher = publisher,
+        pubdate = pubdate,
+        discount = discount,
+        description = description
+    )
+}
+
+fun BookmarkedBook.toEntity(): BookEntity {
+    return BookEntity(
+        title = title,
+        author = author,
+        isbn = isbn,
+        price = price,
+        image = image,
+        publisher = publisher,
+        pubdate = pubdate,
+        discount = discount,
+        description = description
+    )
+}
 
 fun BookVO.toEntity(): BookEntity {
     return BookEntity(

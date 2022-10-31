@@ -31,13 +31,12 @@ android {
 
 dependencies {
 
-    implementation project(":core:data")
-    implementation project(":core:util")
+    api project(":core:data")
 
     implementation "androidx.core:core-ktx:${rootProject.ext.ktxVersion}"
 
-    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.ext.rxAndroidJavaVersion"
-    implementation "io.reactivex.rxjava2:rxjava:$rootProject.ext.rxJavaVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:${rootProject.ext.rxAndroidJavaVersion}"
+    implementation "io.reactivex.rxjava2:rxjava:${rootProject.ext.rxJavaVersion}"
 
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.7.0'

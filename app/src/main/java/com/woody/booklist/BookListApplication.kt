@@ -1,8 +1,9 @@
 package com.woody.booklist
 
 import android.app.Application
+import com.woody.bookmark.di.bookmarkModule
 import com.woody.ui.image.ImageLoader
-import com.woody.search.di.bookListSearchModules
+import com.woody.search.di.bookListSearchModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -14,7 +15,7 @@ class BookListApplication : Application() {
             startKoin {
                 androidContext(this@BookListApplication)
                 androidLogger()
-                modules(bookListSearchModules)
+                modules(bookListSearchModule, bookmarkModule)
             }
     }
 

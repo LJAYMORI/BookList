@@ -34,6 +34,8 @@ android {
 
 dependencies {
 
+    implementation project(":core:data")
+
     implementation "androidx.core:core-ktx:${rootProject.ext.ktxVersion}"
 
     api "androidx.appcompat:appcompat:${rootProject.ext.appcompatVersion}"
@@ -42,8 +44,8 @@ dependencies {
     api "androidx.recyclerview:recyclerview:${rootProject.ext.recyclerViewVersion}"
 
     // Navigation
-    api "androidx.navigation:navigation-fragment-ktx:$rootProject.ext.navigationVersion"
-    api "androidx.navigation:navigation-ui-ktx:$rootProject.ext.navigationVersion"
+    api "androidx.navigation:navigation-fragment-ktx:${rootProject.ext.navigationVersion}"
+    api "androidx.navigation:navigation-ui-ktx:${rootProject.ext.navigationVersion}"
 
     // Image - Glide
     api "com.github.bumptech.glide:glide:${rootProject.ext.glideVersion}"

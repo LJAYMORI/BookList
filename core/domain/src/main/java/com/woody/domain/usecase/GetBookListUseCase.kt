@@ -4,7 +4,7 @@ import com.woody.data.entity.QueryParamEntity
 import com.woody.data.entity.SearchResultEntity
 import com.woody.data.repository.BookListRepository
 import com.woody.data.repository.QueryPaginationParamRepository
-import com.woody.util.SchedulerProvider
+import com.woody.domain.scheduler.SchedulerProvider
 import io.reactivex.Single
 
 class GetBookListUseCase constructor(
