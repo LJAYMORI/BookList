@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.woody.ui.widget.BookListItemView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/book_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
     android:paddingStart="12dp"
     android:paddingTop="4dp"
-    android:paddingBottom="4dp"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toStartOf="@id/bookmark_toggle_button"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    android:paddingBottom="4dp" />

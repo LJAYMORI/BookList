@@ -15,7 +15,6 @@ data class BookListViewHolderData(
     val pubdate: String,
     val discount: String,
     val description: String,
-    val isBookmarked: Boolean,
 ) : ViewHolderData<BookListAdapter.ViewType>, Parcelable {
     override val viewType: BookListAdapter.ViewType
         get() = BookListAdapter.ViewType.BOOK

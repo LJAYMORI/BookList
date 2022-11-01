@@ -30,9 +30,6 @@ class BookmarkFragment : BaseFragment() {
         BookListAdapter(
             itemClickAction = { data ->
                 viewModel.onClickItem(data)
-            },
-            bookmarkClickAction = { data ->
-                showBookmarkCancelDialog(data)
             }
         )
     }
