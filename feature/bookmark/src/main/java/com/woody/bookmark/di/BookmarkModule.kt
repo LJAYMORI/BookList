@@ -24,5 +24,10 @@ val bookmarkModule = module {
 
     factory { BookmarkUseCase(schedulerProvider = get(), repository = get()) }
 
-    viewModel { BookmarkViewModel(getBookmarkedBookListUseCase = get()) }
+    viewModel {
+        BookmarkViewModel(
+            getBookmarkedBookListUseCase = get(),
+            bookmarkUseCase = get()
+        )
+    }
 }

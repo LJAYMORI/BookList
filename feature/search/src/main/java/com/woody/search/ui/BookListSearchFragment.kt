@@ -49,10 +49,8 @@ class BookListSearchFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        initView(savedInstanceState)
-//        initViewModel(savedInstanceState)
-        initView(null)
-        initViewModel(null)
+        initView(savedInstanceState)
+        initViewModel(savedInstanceState)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

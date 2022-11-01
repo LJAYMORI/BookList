@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.woody.ui.R
 import com.woody.ui.databinding.ViewBookListItemBinding
 import com.woody.ui.image.loadUrl
 
@@ -33,7 +34,12 @@ class BookListItemView @JvmOverloads constructor(
     }
 
     fun updateBookmark(flag: Boolean) {
-        binding.bookmarkToggleButton.isChecked = flag
+        val imageResId = if (flag) {
+            R.drawable.ic_bookmark_fill
+        } else {
+            R.drawable.ic_bookmark_outline
+        }
+        binding.bookmarkToggleButton.setImageResource(imageResId)
     }
 
     fun setOnBookmarkClickAction(listener: OnClickListener) {

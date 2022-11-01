@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.ConcatAdapter
 import com.woody.bookmark.BookmarkCallback
+import com.woody.bookmark.R
 import com.woody.bookmark.databinding.FragmentBookmarkBinding
 import com.woody.ui.base.BaseFragment
 import com.woody.ui.recyclerview.adapter.BookListAdapter
 import com.woody.ui.recyclerview.adapter.FooterAdapter
+import com.woody.ui.recyclerview.viewholder.data.BookListViewHolderData
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BookmarkFragment : BaseFragment() {
@@ -29,7 +32,7 @@ class BookmarkFragment : BaseFragment() {
                 viewModel.onClickItem(data)
             },
             bookmarkClickAction = { data ->
-                viewModel.onClickBookmark(data)
+                showBookmarkCancelDialog(data)
             }
         )
     }
@@ -69,5 +72,19 @@ class BookmarkFragment : BaseFragment() {
                 (activity as? BookmarkCallback)?.onClickedBookmarkItem(data)
             }
         }
+    }
+
+    private fun showBookmarkCancelDialog(data: BookListViewHolderData) {
+        val context = context ?: return
+        AlertDialog.Builder(context)
+            .setTitle(R.string.bookmarks_cancel_alert_title)
+            .setMessage(R.string.bookmarks_cancel_alert_description)
+            .setPositiveButton(R.string.bookmarks_cancel_alert_positive) { _, _ ->
+                viewModel.onClickUnBookmark(data)
+            }
+            .setNegativeButton(R.string.bookmarks_cancel_alert_negative) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 }
