@@ -15,7 +15,7 @@ class BookListItemViewHolder(
         binding.bookListItem.setOnClickListener {
             data?.let(itemClickAction)
         }
-        binding.bookmarkToggleButton.setOnClickListener {
+        binding.bookListItem.setOnBookmarkClickAction {
             data?.let(bookmarkClickAction)
         }
     }
@@ -27,6 +27,7 @@ class BookListItemViewHolder(
             updateTitle(data.title)
             updateAuthor(data.author)
             updateDescription(data.description)
+            updateBookmark(data.isBookmarked)
         }
     }
 }

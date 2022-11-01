@@ -3,29 +3,34 @@ package com.woody.ui.recyclerview.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.woody.ui.databinding.ItemInputBinding
+import com.woody.ui.databinding.ItemBookNameInputBinding
 import com.woody.ui.recyclerview.viewholder.BaseViewHolder
 import com.woody.ui.recyclerview.viewholder.EmptyViewHolder
-import com.woody.ui.recyclerview.viewholder.InputViewHolder
+import com.woody.ui.recyclerview.viewholder.BookNameInputViewHolder
+import com.woody.ui.recyclerview.viewholder.ViewHolderViewType
+import com.woody.ui.recyclerview.viewholder.data.BookNameInputViewHolderData
+import com.woody.ui.recyclerview.viewholder.data.ViewHolderData
 
 class InputListAdapter(
     private val textChangedAction: (String) -> Unit
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
-    enum class ViewType {
+    enum class ViewType : ViewHolderViewType {
         INPUT, UNKNOWN
     }
 
-    interface InputListData {
-        val viewType: ViewType
-    }
-
-    private val items = arrayListOf<InputListData>()
+    private val items = arrayListOf<ViewHolderData<ViewType>>()
+    var currentQuery: String = ""
+        private set
 
     fun init(query: String, hint: String) {
         items.clear()
-        items.add(InputViewHolder.Data(defaultQuery = query, hint = hint))
+        items.add(BookNameInputViewHolderData(defaultQuery = query, hint = hint))
         notifyItemRangeChanged(0, items.size)
+    }
+
+    fun getBookNameInputDataList(): List<BookNameInputViewHolderData> {
+        return items.mapNotNull { it as? BookNameInputViewHolderData }
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -39,9 +44,12 @@ class InputListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
         return when (ViewType.values()[viewType]) {
             ViewType.INPUT -> {
-                InputViewHolder(
-                    binding = ItemInputBinding.inflate(LayoutInflater.from(parent.context), parent, false),
-                    textChangedAction = textChangedAction
+                BookNameInputViewHolder(
+                    binding = ItemBookNameInputBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+                    textChangedAction = { changedText ->
+                        currentQuery = changedText
+                        textChangedAction.invoke(changedText)
+                    }
                 )
             }
             ViewType.UNKNOWN -> {
@@ -53,7 +61,7 @@ class InputListAdapter(
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
         val data = items.getOrNull(position) ?: return
         when {
-            holder is InputViewHolder && data is InputViewHolder.Data -> {
+            holder is BookNameInputViewHolder && data is BookNameInputViewHolderData -> {
                 holder.onBindViewHolder(data)
             }
         }

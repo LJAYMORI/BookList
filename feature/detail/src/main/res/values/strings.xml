@@ -5,4 +5,6 @@
     <string name="detail_has_no_price">Has No Price</string>
     <string name="detail_isbn_s">ISBN: %s</string>
     <string name="detail_publish_date_s">Published at: %s</string>
+    <string name="detail_bookmark">Bookmark</string>
+    <string name="detail_bookmark_cancel">Cancel Bookmark</string>
 </resources>

@@ -15,6 +15,7 @@
         android:theme="@style/Theme.BookList">
         <activity
             android:name="com.woody.booklist.ui.MainActivity"
+            android:theme="@style/Theme.BookList.NoActionBar"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

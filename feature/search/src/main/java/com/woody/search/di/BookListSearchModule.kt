@@ -1,19 +1,20 @@
 package com.woody.search.di
 
-import com.woody.data.datasource.BookListDataSource
-import com.woody.data.datasource.BookListRemoteDataSource
-import com.woody.data.entity.QueryParamEntity
 import com.woody.data.repository.BookListRepository
 import com.woody.data.repository.BookListRepositoryImpl
 import com.woody.data.repository.QueryPaginationParamRepository
 import com.woody.data.repository.QueryPaginationParamRepositoryImpl
+import com.woody.database.BookmarkBookDatabase
 import com.woody.domain.scheduler.DefaultSchedulerProvider
 import com.woody.domain.scheduler.SchedulerProvider
 import com.woody.domain.usecase.GetBookListUseCase
+import com.woody.domain.usecase.RequestBookListUseCase
+import com.woody.model.QueryParamModel
 import com.woody.network.api.BookListApi
 import com.woody.network.retrofit.HeaderInterceptor
 import com.woody.network.retrofit.RetrofitFactory
 import com.woody.search.ui.BookListSearchViewModel
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -33,26 +34,35 @@ val bookListSearchModule = module {
 
     single { get<Retrofit>().create(BookListApi::class.java) }
 
-    single<BookListDataSource> { BookListRemoteDataSource(api = get()) }
+    single { BookmarkBookDatabase.getDatabase(androidContext()).bookDao() }
 
-    factory<BookListRepository> { BookListRepositoryImpl(remote = get()) }
+    single<BookListRepository> { BookListRepositoryImpl(api = get(), dao = get()) }
 
-    factory { QueryParamEntity(query = "", displayCount = 10, pageNumber = 1) }
+    single { QueryParamModel(query = "", displayCount = 10, pageNumber = 1) }
 
-    factory<QueryPaginationParamRepository> { QueryPaginationParamRepositoryImpl(param = get()) }
+    factory <QueryPaginationParamRepository> { QueryPaginationParamRepositoryImpl(param = get()) }
 
     factory {
-        GetBookListUseCase(
+        RequestBookListUseCase(
             schedulerProvider = get(),
             bookListRepository = get(),
             queryParamRepository = get()
         )
     }
 
+    factory {
+        GetBookListUseCase(
+            schedulerProvider = get(),
+            repository = get()
+        )
+    }
+
     viewModel {
         BookListSearchViewModel(
+            requestBookListUseCase = get(),
             getBookListUseCase = get(),
-            bookmarkUseCase = get()
+            getBookmarkedListUseCase = get(),
+            bookmarkUseCase = get(),
         )
     }
 }

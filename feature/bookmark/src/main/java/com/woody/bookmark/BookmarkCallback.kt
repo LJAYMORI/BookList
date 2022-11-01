@@ -1,15 +1,7 @@
 package com.woody.bookmark
 
+import com.woody.ui.recyclerview.viewholder.data.BookListViewHolderData
+
 interface BookmarkCallback {
-    fun onClickBookItem(
-        title: String,
-        author: String,
-        isbn: String,
-        price: String,
-        image: String,
-        publisher: String,
-        pubdate: String,
-        discount: String,
-        description: String
-    )
+    fun onClickedBookmarkItem(viewData: BookListViewHolderData)
 }

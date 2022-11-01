@@ -1,18 +1,18 @@
 package com.woody.data.repository
 
-import com.woody.data.entity.QueryParamEntity
+import com.woody.model.QueryParamModel
 
 interface QueryPaginationParamRepository {
-    fun getOrGenerateParam(query: String): QueryParamEntity
-    fun getParam(): QueryParamEntity
+    fun getOrGenerateParam(query: String): QueryParamModel
+    fun getParam(): QueryParamModel
     fun increasePageNumber()
 }
 
 class QueryPaginationParamRepositoryImpl(
-    private var param: QueryParamEntity
+    private var param: QueryParamModel
 ) : QueryPaginationParamRepository {
 
-    override fun getOrGenerateParam(query: String): QueryParamEntity {
+    override fun getOrGenerateParam(query: String): QueryParamModel {
         return if (param.query == query) {
             param
         } else {
@@ -22,7 +22,7 @@ class QueryPaginationParamRepositoryImpl(
         }
     }
 
-    override fun getParam(): QueryParamEntity {
+    override fun getParam(): QueryParamModel {
         return param
     }
 

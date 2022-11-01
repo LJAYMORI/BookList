@@ -4,16 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ConcatAdapter
 import com.woody.bookmark.BookmarkCallback
 import com.woody.bookmark.databinding.FragmentBookmarkBinding
+import com.woody.ui.base.BaseFragment
 import com.woody.ui.recyclerview.adapter.BookListAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class BookmarkFragment : Fragment() {
+class BookmarkFragment : BaseFragment() {
+
+    companion object {
+        fun newInstance(): BookmarkFragment {
+            return BookmarkFragment()
+        }
+    }
 
     private lateinit var binding: FragmentBookmarkBinding
     private val viewModel: BookmarkViewModel by viewModel()
@@ -21,20 +25,10 @@ class BookmarkFragment : Fragment() {
     private val bookListAdapter: BookListAdapter by lazy {
         BookListAdapter(
             itemClickAction = { data ->
-                (activity as? BookmarkCallback)?.onClickBookItem(
-                    title = data.title,
-                    author = data.author,
-                    isbn = data.isbn,
-                    price = "",
-                    image = data.image,
-                    publisher = "",
-                    pubdate = "",
-                    discount = "",
-                    description = data.description,
-                )
+                viewModel.onClickItem(data)
             },
             bookmarkClickAction = { data ->
-
+                viewModel.onClickBookmark(data)
             }
         )
     }
@@ -52,8 +46,6 @@ class BookmarkFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initViewModel()
-
-        viewModel.requestBookmarks()
     }
 
     private fun initView() {
@@ -61,12 +53,16 @@ class BookmarkFragment : Fragment() {
     }
 
     private fun initViewModel() {
-        viewModel.bookmarkedListLiveData.observe { list ->
-            bookListAdapter.setItems(list)
+        repeatOnStarted {
+            viewModel.bookmarkedListFlow.collect { list ->
+                bookListAdapter.setItems(list)
+            }
         }
-    }
 
-    private fun <T> LiveData<T>.observe(observer: Observer<in T>) {
-        this.observe(viewLifecycleOwner, observer)
+        repeatOnStarted {
+            viewModel.openBookDetailFlow.collect { data ->
+                (activity as? BookmarkCallback)?.onClickedBookmarkItem(data)
+            }
+        }
     }
 }

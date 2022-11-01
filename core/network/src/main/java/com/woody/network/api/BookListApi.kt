@@ -1,6 +1,6 @@
 package com.woody.network.api
 
-import com.woody.network.vo.SearchResultVO
+import com.woody.network.vo.SearchResultResponse
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -11,5 +11,5 @@ interface BookListApi {
     fun getBookList(@Query("query") query: String,
                     @Query("display") display: Int,
                     @Query("start") start: Int,
-    ): Single<SearchResultVO>
+    ): Single<SearchResultResponse>
 }

@@ -3,7 +3,7 @@
     package="com.woody.detail">
 
     <application>
-        <activity android:name=".BookDetailActivity" />
+        <activity android:name=".ui.BookDetailActivity" />
     </application>
 
 </manifest>

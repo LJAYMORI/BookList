@@ -32,8 +32,9 @@ android {
 
 dependencies {
 
-    api project(":core:network")
+    api project(":core:model")
     api project(":core:database")
+    api project(":core:network")
 
     implementation "androidx.core:core-ktx:${rootProject.ext.ktxVersion}"
 

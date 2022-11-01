@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-parcelize'
 }
 
 android {
@@ -34,9 +35,12 @@ android {
 
 dependencies {
 
-    implementation project(":core:data")
+    implementation project(":core:model")
 
     implementation "androidx.core:core-ktx:${rootProject.ext.ktxVersion}"
+
+    implementation "io.reactivex.rxjava2:rxandroid:${rootProject.ext.rxAndroidJavaVersion}"
+    implementation "io.reactivex.rxjava2:rxjava:${rootProject.ext.rxJavaVersion}"
 
     api "androidx.appcompat:appcompat:${rootProject.ext.appcompatVersion}"
     api "com.google.android.material:material:${rootProject.ext.materialVersion}"

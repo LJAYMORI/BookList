@@ -2,8 +2,10 @@ package com.woody.ui.recyclerview.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.woody.ui.databinding.ItemBookBinding
+import com.woody.ui.recyclerview.diffutil.DefaultViewDataDiffUtil
 import com.woody.ui.recyclerview.viewholder.BaseViewHolder
 import com.woody.ui.recyclerview.viewholder.BookListItemViewHolder
 import com.woody.ui.recyclerview.viewholder.EmptyViewHolder
@@ -20,21 +22,26 @@ class BookListAdapter(
         BOOK, UNKNOWN
     }
 
-    private val items = arrayListOf<ViewHolderData<*>>()
+    private val items = arrayListOf<ViewHolderData<ViewType>>()
 
-    fun setItems(list: List<ViewHolderData<*>>) {
-        items.clear()
-        items.addAll(list)
-        notifyDataSetChanged()
+    fun getBookListDataList(): List<BookListViewHolderData> {
+        return items.mapNotNull { it as? BookListViewHolderData }
     }
 
-    fun addItems(list: List<ViewHolderData<*>>) {
-        items.addAll(list)
-        notifyDataSetChanged()
+    fun addItems(list: List<ViewHolderData<ViewType>>) {
+        setItems(items + list)
+    }
+
+    fun setItems(list: List<ViewHolderData<ViewType>>) {
+        DiffUtil.calculateDiff(DefaultViewDataDiffUtil(oldList = items, newList = list)).apply {
+            items.clear()
+            items.addAll(list)
+            dispatchUpdatesTo(this@BookListAdapter)
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return (items.getOrNull(position)?.viewType as? ViewType)?.ordinal ?: ViewType.UNKNOWN.ordinal
+        return items.getOrNull(position)?.viewType?.ordinal ?: ViewType.UNKNOWN.ordinal
     }
 
     override fun getItemCount(): Int {

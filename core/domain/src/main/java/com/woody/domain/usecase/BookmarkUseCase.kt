@@ -1,23 +1,25 @@
 package com.woody.domain.usecase
 
-import com.woody.data.entity.BookEntity
 import com.woody.data.repository.BookmarkBookRepository
 import com.woody.domain.scheduler.SchedulerProvider
+import com.woody.domain.usecase.base.CompletableUseCase
+import com.woody.model.BookModel
 import io.reactivex.Completable
 
 class BookmarkUseCase(
-    private val schedulerProvider: SchedulerProvider,
-    private val repository: BookmarkBookRepository
-) : SingleUseCase() {
-    operator fun invoke(entity: BookEntity, flag: Boolean): Completable {
-        val stream = if (flag) {
-            repository.insert(entity)
+    schedulerProvider: SchedulerProvider,
+    private val repository: BookmarkBookRepository,
+) : CompletableUseCase<BookmarkUseCase.Param>(schedulerProvider) {
+
+    override fun buildStream(param: Param): Completable {
+        return if (param.flag) {
+            repository.insert(param.model)
         } else {
-            repository.delete(entity.isbn)
+            repository.delete(param.model.isbn)
         }
-        return stream.subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.ui)
-            .doOnSubscribe { disposable = it }
-            .doOnComplete { disposable = null }
     }
+
+    operator fun invoke(model: BookModel, flag: Boolean) = invoke(Param(model, flag))
+
+    data class Param(val model: BookModel, val flag: Boolean)
 }
