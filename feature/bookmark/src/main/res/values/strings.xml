@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bookmarks_cancel_alert_title">알림</string>
+    <string name="bookmarks_cancel_alert_description">북마크를 취소하면 목록에서 책이 사라집니다.\n취소하시겠습니까?</string>
+    <string name="bookmarks_cancel_alert_positive">확인</string>
+    <string name="bookmarks_cancel_alert_negative">취소</string>
+</resources>

@@ -3,7 +3,7 @@ package com.woody.bookmark.di
 import com.woody.bookmark.ui.BookmarkViewModel
 import com.woody.data.repository.BookmarkBookRepository
 import com.woody.data.repository.BookmarkBookRepositoryImpl
-import com.woody.database.BookmarkBookDatabase
+import com.woody.database.BookDatabase
 import com.woody.domain.scheduler.DefaultSchedulerProvider
 import com.woody.domain.scheduler.SchedulerProvider
 import com.woody.domain.usecase.BookmarkUseCase
@@ -16,7 +16,7 @@ val bookmarkModule = module {
 
     single<SchedulerProvider> { DefaultSchedulerProvider() }
 
-    single { BookmarkBookDatabase.getDatabase(androidContext()).bookmarkBookDao() }
+    single { BookDatabase.getDatabase(androidContext()).bookmarkBookDao() }
 
     single<BookmarkBookRepository> { BookmarkBookRepositoryImpl(dao = get()) }
 
@@ -24,5 +24,10 @@ val bookmarkModule = module {
 
     factory { BookmarkUseCase(schedulerProvider = get(), repository = get()) }
 
-    viewModel { BookmarkViewModel(getBookmarkedBookListUseCase = get()) }
+    viewModel {
+        BookmarkViewModel(
+            getBookmarkedBookListUseCase = get(),
+            bookmarkUseCase = get()
+        )
+    }
 }

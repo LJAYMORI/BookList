@@ -6,7 +6,6 @@ import com.woody.ui.recyclerview.viewholder.data.BookListViewHolderData
 class BookListItemViewHolder(
     private val binding: ItemBookBinding,
     itemClickAction: (BookListViewHolderData) -> Unit,
-    bookmarkClickAction: (BookListViewHolderData) -> Unit
 ) : BaseViewHolder<BookListViewHolderData>(binding.root) {
 
     private var data: BookListViewHolderData? = null
@@ -14,9 +13,6 @@ class BookListItemViewHolder(
     init {
         binding.bookListItem.setOnClickListener {
             data?.let(itemClickAction)
-        }
-        binding.bookListItem.setOnBookmarkClickAction {
-            data?.let(bookmarkClickAction)
         }
     }
 
@@ -27,7 +23,6 @@ class BookListItemViewHolder(
             updateTitle(data.title)
             updateAuthor(data.author)
             updateDescription(data.description)
-            updateBookmark(data.isBookmarked)
         }
     }
 }

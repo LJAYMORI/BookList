@@ -9,7 +9,7 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 
 object BookListDataMapper {
-    fun BookModel.toBookListViewHolderData(bookmarked: Boolean = false): BookListViewHolderData {
+    fun BookModel.toBookListViewHolderData(): BookListViewHolderData {
         return BookListViewHolderData(
             title = this.title,
             author = this.author,
@@ -19,8 +19,7 @@ object BookListDataMapper {
             publisher = this.publisher,
             pubdate = this.pubdate,
             discount = this.discount,
-            description = this.description,
-            isBookmarked = bookmarked
+            description = this.description
         )
     }
 
@@ -45,9 +44,7 @@ fun Single<Pair<Result<SearchResultModel>, Result<List<BookModel>>>>.mapToBookLi
         val bookmarkedList = bookmarkListResult.getOrNull() ?: emptyList()
         searchResult.getOrNull()?.items?.let { items ->
             items.map { bookModel ->
-                bookModel.toBookListViewHolderData(
-                    bookmarked = bookmarkedList.find { it.isbn == bookModel.isbn } != null
-                )
+                bookModel.toBookListViewHolderData()
             }
         } ?: emptyList()
     }
@@ -57,7 +54,7 @@ fun Single<Pair<Result<SearchResultModel>, Result<List<BookModel>>>>.mapToBookLi
 fun Flowable<Result<List<BookModel>>>.mapToBookListData(): Flowable<List<BookListViewHolderData>> {
     return this.map { result ->
         result.getOrNull()?.let { items ->
-            items.map { it.toBookListViewHolderData(bookmarked = true) }
+            items.map { it.toBookListViewHolderData() }
         } ?: emptyList()
     }
 }

@@ -8,14 +8,13 @@ import com.woody.ui.databinding.ItemBookBinding
 import com.woody.ui.recyclerview.diffutil.DefaultViewDataDiffUtil
 import com.woody.ui.recyclerview.viewholder.BaseViewHolder
 import com.woody.ui.recyclerview.viewholder.BookListItemViewHolder
-import com.woody.ui.recyclerview.viewholder.EmptyViewHolder
-import com.woody.ui.recyclerview.viewholder.data.ViewHolderData
 import com.woody.ui.recyclerview.viewholder.ViewHolderViewType
 import com.woody.ui.recyclerview.viewholder.data.BookListViewHolderData
+import com.woody.ui.recyclerview.viewholder.data.UnknownViewHolder
+import com.woody.ui.recyclerview.viewholder.data.ViewHolderData
 
 class BookListAdapter(
-    private val itemClickAction: (BookListViewHolderData) -> Unit,
-    private val bookmarkClickAction: (BookListViewHolderData) -> Unit
+    private val itemClickAction: (BookListViewHolderData) -> Unit
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
     enum class ViewType : ViewHolderViewType {
@@ -55,12 +54,11 @@ class BookListAdapter(
                     binding = ItemBookBinding.inflate(
                         LayoutInflater.from(parent.context), parent, false
                     ),
-                    itemClickAction = itemClickAction,
-                    bookmarkClickAction = bookmarkClickAction
+                    itemClickAction = itemClickAction
                 )
             }
             ViewType.UNKNOWN -> {
-                EmptyViewHolder(parent.context)
+                UnknownViewHolder(parent.context)
             }
         }
     }

@@ -3,31 +3,27 @@ package com.woody.search.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.woody.domain.usecase.BookmarkUseCase
-import com.woody.domain.usecase.GetBookListUseCase
 import com.woody.domain.usecase.RequestBookListUseCase
-import com.woody.domain.usecase.GetBookmarkedBookListUseCase
 import com.woody.ui.mapper.BookListDataMapper.toBookListViewHolderData
-import com.woody.ui.mapper.BookListDataMapper.toModel
 import com.woody.ui.recyclerview.viewholder.data.BookListViewHolderData
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class BookListSearchViewModel(
-    private val requestBookListUseCase: RequestBookListUseCase,
-    getBookListUseCase: GetBookListUseCase,
-    private val getBookmarkedListUseCase: GetBookmarkedBookListUseCase,
-    private val bookmarkUseCase: BookmarkUseCase,
+    private val requestBookListUseCase: RequestBookListUseCase
 ) : ViewModel() {
 
-//    private val _pageListFlow = MutableStateFlow(emptyList<BookListViewHolderData>())
-//    val pageListFlow = _pageListFlow.asStateFlow()
-    private val _pageListFlow = MutableSharedFlow<List<BookListViewHolderData>>()
-    val pageListFlow = _pageListFlow.asSharedFlow()
+    private val _pageListFlow = MutableStateFlow(emptyList<BookListViewHolderData>() to true)
+    val pageListFlow = _pageListFlow.asStateFlow()
+
+    private val _loadingFlow = MutableStateFlow(false)
+    val loadingFlow = _loadingFlow.asStateFlow()
 
     private val _hideKeyboardFlow = MutableSharedFlow<Unit>()
     val hideKeyboardFlow = _hideKeyboardFlow.asSharedFlow()
@@ -46,9 +42,16 @@ class BookListSearchViewModel(
             .flatMapSingle { query ->
                 requestBookListUseCase.invoke(query)
             }
-            .subscribe({
+            .subscribe({ result ->
+                val resultModel = result.getOrNull()
                 viewModelScope.launch {
                     _hideKeyboardFlow.emit(Unit)
+                    resultModel?.run {
+                        _loadingFlow.emit(total != items.size)
+                    }
+                    resultModel?.items?.let { list ->
+                        _pageListFlow.emit(list.map { it.toBookListViewHolderData() } to true)
+                    }
                 }
             }, { e ->
                 Log.e("querySubject", "", e)
@@ -59,38 +62,18 @@ class BookListSearchViewModel(
             .flatMapSingle {
                 requestBookListUseCase.invoke()
             }
-            .subscribe({
-                // do nothing
+            .subscribe({ result ->
+                val resultModel = result.getOrNull()
+                viewModelScope.launch {
+                    resultModel?.items?.let { list ->
+                        _pageListFlow.emit(list.map { it.toBookListViewHolderData() } to false)
+                    }
+                    _loadingFlow.emit(resultModel?.items?.size?.let { it > 0 } ?: false)
+                }
             }, { e ->
                 Log.e("requestNextPageSubject", "", e)
             })
             .let { disposable.add(it) }
-
-        getBookListUseCase.invoke(Unit)
-            .map { it.getOrNull() ?: emptyList() }
-            .flatMapSingle { bookList ->
-                getBookmarkedListUseCase.invoke(Unit)
-                    .map { result ->
-                        bookList to (result.getOrNull()?.map { it.isbn } ?: emptyList())
-                    }
-                    .first(bookList to emptyList())
-            }
-            .map { (bookList, bookmarkList) ->
-                bookList.map { model ->
-                    model.toBookListViewHolderData(
-                        bookmarked = bookmarkList.find { isbn ->
-                            isbn == model.isbn
-                        } != null
-                    )
-                }
-            }
-            .subscribe({ list ->
-                viewModelScope.launch {
-                    _pageListFlow.emit(list)
-                }
-            }, { e ->
-                Log.e("asdf", "", e)
-            }).let { disposable.add(it) }
     }
 
     override fun onCleared() {
@@ -110,15 +93,5 @@ class BookListSearchViewModel(
         viewModelScope.launch {
             _openDetailPageFlow.emit(data)
         }
-    }
-
-    fun onClickedBookmark(data: BookListViewHolderData) {
-        val toggledFlag = !data.isBookmarked
-        bookmarkUseCase.invoke(data.toModel(), toggledFlag)
-            .subscribe({
-
-            }, { e ->
-                Log.e("asdf", "", e)
-            }).let { disposable.add(it) }
     }
 }

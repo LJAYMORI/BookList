@@ -11,7 +11,6 @@ import com.woody.ui.base.BaseFragment
 import com.woody.ui.image.loadUrl
 import com.woody.ui.recyclerview.viewholder.data.BookListViewHolderData
 import com.woody.util.toCurrency
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BookDetailFragment : BaseFragment() {
 
@@ -26,7 +25,6 @@ class BookDetailFragment : BaseFragment() {
     }
 
     private lateinit var binding: FragmentBookDetailBinding
-    private val viewModel: BookDetailViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,11 +38,7 @@ class BookDetailFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        initViewModel()
 
-        arguments?.getParcelable<BookListViewHolderData>(KEY_VIEW_DATA)?.let { viewData ->
-            viewModel.checkBookmarked(viewData.isbn)
-        }
     }
 
     private fun initView() {
@@ -67,23 +61,6 @@ class BookDetailFragment : BaseFragment() {
             binding.bookDetailIsbn.text = getString(R.string.detail_isbn_s, viewData.isbn)
             binding.bookDetailPubdate.text = getString(R.string.detail_publish_date_s, viewData.pubdate)
             binding.bookDetailDescription.text = viewData.description
-
-            binding.bookDetailBookmark.setOnClickListener {
-                viewModel.onClickedBookmark(viewData)
-            }
-        }
-
-    }
-
-    private fun initViewModel() {
-        repeatOnStarted {
-            viewModel.bookmarkChangeFlow.collect { isBookmarked ->
-                binding.bookDetailBookmark.text = if (isBookmarked) {
-                    getString(R.string.detail_bookmark_cancel)
-                } else {
-                    getString(R.string.detail_bookmark)
-                }
-            }
         }
     }
 }

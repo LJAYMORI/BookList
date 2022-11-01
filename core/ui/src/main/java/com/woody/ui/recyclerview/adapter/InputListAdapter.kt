@@ -2,13 +2,15 @@ package com.woody.ui.recyclerview.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.woody.ui.databinding.ItemBookNameInputBinding
+import com.woody.ui.recyclerview.diffutil.DefaultViewDataDiffUtil
 import com.woody.ui.recyclerview.viewholder.BaseViewHolder
-import com.woody.ui.recyclerview.viewholder.EmptyViewHolder
 import com.woody.ui.recyclerview.viewholder.BookNameInputViewHolder
 import com.woody.ui.recyclerview.viewholder.ViewHolderViewType
 import com.woody.ui.recyclerview.viewholder.data.BookNameInputViewHolderData
+import com.woody.ui.recyclerview.viewholder.data.UnknownViewHolder
 import com.woody.ui.recyclerview.viewholder.data.ViewHolderData
 
 class InputListAdapter(
@@ -24,9 +26,17 @@ class InputListAdapter(
         private set
 
     fun init(query: String, hint: String) {
-        items.clear()
-        items.add(BookNameInputViewHolderData(defaultQuery = query, hint = hint))
-        notifyItemRangeChanged(0, items.size)
+        val newList = arrayListOf(BookNameInputViewHolderData(defaultQuery = query, hint = hint))
+        DiffUtil.calculateDiff(
+            DefaultViewDataDiffUtil(
+                oldList = items,
+                newList = newList
+            )
+        ).apply {
+            items.clear()
+            items.addAll(newList)
+            dispatchUpdatesTo(this@InputListAdapter)
+        }
     }
 
     fun getBookNameInputDataList(): List<BookNameInputViewHolderData> {
@@ -53,7 +63,7 @@ class InputListAdapter(
                 )
             }
             ViewType.UNKNOWN -> {
-                EmptyViewHolder(parent.context)
+                UnknownViewHolder(parent.context)
             }
         }
     }

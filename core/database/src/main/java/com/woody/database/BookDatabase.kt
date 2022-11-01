@@ -17,18 +17,18 @@ import com.woody.database.entity.BookmarkedBookEntity
     version = 1,
     exportSchema = false
 )
-abstract class BookmarkBookDatabase : RoomDatabase() {
+abstract class BookDatabase : RoomDatabase() {
     abstract fun bookmarkBookDao(): BookmarkBookDao
     abstract fun bookDao(): BookDao
 
     companion object {
-        private var INSTANCE: BookmarkBookDatabase? = null
+        private var INSTANCE: BookDatabase? = null
 
-        fun getDatabase(context: Context): BookmarkBookDatabase {
+        fun getDatabase(context: Context): BookDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.inMemoryDatabaseBuilder(
                     context.applicationContext,
-                    BookmarkBookDatabase::class.java
+                    BookDatabase::class.java
                 ).build()
                 INSTANCE = instance
                 return instance
