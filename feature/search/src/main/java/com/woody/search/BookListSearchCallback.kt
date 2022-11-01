@@ -1,16 +1,8 @@
 package com.woody.search
 
+import com.woody.ui.recyclerview.viewholder.data.BookListViewHolderData
+
 
 interface BookListSearchCallback {
-    fun onClickBookItem(
-        title: String,
-        author: String,
-        isbn: String,
-        price: String,
-        image: String,
-        publisher: String,
-        pubdate: String,
-        discount: String,
-        description: String
-    )
+    fun onClickBookItem(viewData: BookListViewHolderData)
 }

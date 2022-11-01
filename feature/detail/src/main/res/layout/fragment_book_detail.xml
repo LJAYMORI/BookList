@@ -8,9 +8,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/common_main_background"
         android:paddingTop="12dp"
-        android:paddingBottom="12dp"
-        android:background="@color/common_main_background">
+        android:paddingBottom="12dp">
 
         <ImageView
             android:id="@+id/book_detail_image"
@@ -104,11 +104,25 @@
             app:barrierDirection="bottom"
             app:constraint_referenced_ids="book_detail_image,book_detail_pubdate" />
 
+        <Button
+            android:id="@+id/book_detail_bookmark"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginEnd="18dp"
+            android:drawableStart="@drawable/selector_bookmark"
+            android:drawableTint="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/book_detail_bottom_barrier"
+            android:text="@string/detail_bookmark" />
+
         <TextView
             android:id="@+id/book_detail_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:lineSpacingMultiplier="1.2"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
@@ -117,7 +131,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/book_detail_bottom_barrier"
+            app:layout_constraintTop_toBottomOf="@id/book_detail_bookmark"
             tools:text="@tools:sample/lorem/random" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

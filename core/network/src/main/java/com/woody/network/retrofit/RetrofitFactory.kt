@@ -1,6 +1,7 @@
 package com.woody.network.retrofit
 
 import com.woody.network.BuildConfig
+import io.reactivex.schedulers.Schedulers
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -12,7 +13,7 @@ object RetrofitFactory {
     fun create(baseUrl: String, vararg interceptors: Interceptor): Retrofit {
         return Retrofit.Builder()
             .baseUrl(baseUrl)
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
             .addConverterFactory(GsonConverterFactory.create())
             .client(buildClient(*interceptors))
             .build()

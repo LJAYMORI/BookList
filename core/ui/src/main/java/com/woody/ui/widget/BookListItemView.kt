@@ -31,4 +31,12 @@ class BookListItemView @JvmOverloads constructor(
     fun updateDescription(description: String) {
         binding.bookListDescription.text = description
     }
+
+    fun updateBookmark(flag: Boolean) {
+        binding.bookmarkToggleButton.isChecked = flag
+    }
+
+    fun setOnBookmarkClickAction(listener: OnClickListener) {
+        binding.bookmarkToggleButton.setOnClickListener(listener)
+    }
 }

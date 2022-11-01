@@ -1,36 +1,16 @@
 package com.woody.domain.usecase
 
-import com.woody.data.entity.QueryParamEntity
-import com.woody.data.entity.SearchResultEntity
 import com.woody.data.repository.BookListRepository
-import com.woody.data.repository.QueryPaginationParamRepository
-import com.woody.util.SchedulerProvider
-import io.reactivex.Single
+import com.woody.domain.scheduler.SchedulerProvider
+import com.woody.domain.usecase.base.FlowableUseCase
+import com.woody.model.BookModel
+import io.reactivex.Flowable
 
-class GetBookListUseCase constructor(
-    private val schedulerProvider: SchedulerProvider,
-    private val bookListRepository: BookListRepository,
-    private val queryParamRepository: QueryPaginationParamRepository
-) : SingleUseCase() {
-
-    operator fun invoke(): Single<Result<SearchResultEntity>> {
-        return getBookList(param = queryParamRepository.getParam())
-    }
-
-    operator fun invoke(query: String): Single<Result<SearchResultEntity>> {
-        return getBookList(param = queryParamRepository.getOrGenerateParam(query))
-    }
-
-    private fun getBookList(param: QueryParamEntity): Single<Result<SearchResultEntity>> {
-        return bookListRepository.getBookList(param)
-            .subscribeOn(schedulerProvider.io)
-            .observeOn(schedulerProvider.ui)
-            .doOnSuccess { queryParamRepository.increasePageNumber() }
-            .doOnSubscribe {
-                disposable = it
-            }
-            .doOnEvent { _, _ ->
-                disposable = null
-            }
+class GetBookListUseCase(
+    schedulerProvider: SchedulerProvider,
+    private val repository: BookListRepository
+) : FlowableUseCase<Unit, List<BookModel>>(schedulerProvider) {
+    override fun buildStream(param: Unit): Flowable<Result<List<BookModel>>> {
+        return repository.getBookList()
     }
 }

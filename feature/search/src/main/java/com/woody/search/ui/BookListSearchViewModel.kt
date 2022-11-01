@@ -1,32 +1,39 @@
 package com.woody.search.ui
 
 import android.util.Log
-import androidx.annotation.WorkerThread
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.woody.data.entity.SearchResultEntity
+import androidx.lifecycle.viewModelScope
+import com.woody.domain.usecase.BookmarkUseCase
 import com.woody.domain.usecase.GetBookListUseCase
-import com.woody.ui.adapter.BookListAdapter
-import com.woody.ui.viewholder.BookListItemViewHolder
-import com.woody.ui.viewholder.BookListMessageViewHolder
-import io.reactivex.Single
+import com.woody.domain.usecase.RequestBookListUseCase
+import com.woody.domain.usecase.GetBookmarkedBookListUseCase
+import com.woody.ui.mapper.BookListDataMapper.toBookListViewHolderData
+import com.woody.ui.mapper.BookListDataMapper.toModel
+import com.woody.ui.recyclerview.viewholder.data.BookListViewHolderData
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
 
-class BookListSearchViewModel constructor(
-    private val getBookListUseCase: GetBookListUseCase
+class BookListSearchViewModel(
+    private val requestBookListUseCase: RequestBookListUseCase,
+    getBookListUseCase: GetBookListUseCase,
+    private val getBookmarkedListUseCase: GetBookmarkedBookListUseCase,
+    private val bookmarkUseCase: BookmarkUseCase,
 ) : ViewModel() {
 
-    private val _firstPageLiveData = MutableLiveData<List<BookListAdapter.BookListData>>()
-    val firstPageLiveData: LiveData<List<BookListAdapter.BookListData>> = _firstPageLiveData
+//    private val _pageListFlow = MutableStateFlow(emptyList<BookListViewHolderData>())
+//    val pageListFlow = _pageListFlow.asStateFlow()
+    private val _pageListFlow = MutableSharedFlow<List<BookListViewHolderData>>()
+    val pageListFlow = _pageListFlow.asSharedFlow()
 
-    private val _nextPageLiveData = MutableLiveData<List<BookListAdapter.BookListData>>()
-    val nextPageLiveData: LiveData<List<BookListAdapter.BookListData>> = _nextPageLiveData
+    private val _hideKeyboardFlow = MutableSharedFlow<Unit>()
+    val hideKeyboardFlow = _hideKeyboardFlow.asSharedFlow()
 
-    private val _hideKeyboardLiveData = MutableLiveData<Unit>()
-    val hideKeyboardLiveData: LiveData<Unit> = _hideKeyboardLiveData
+    private val _openDetailPageFlow = MutableSharedFlow<BookListViewHolderData>()
+    val openDetailPageFlow = _openDetailPageFlow.asSharedFlow()
 
     private val querySubject = PublishSubject.create<String>()
     private val requestNextPageSubject = PublishSubject.create<Unit>()
@@ -34,32 +41,56 @@ class BookListSearchViewModel constructor(
     private val disposable = CompositeDisposable()
 
     init {
-        querySubject.filter { query -> query.isNotEmpty() }
-            .debounce(1L, TimeUnit.SECONDS)
+        querySubject.debounce(1L, TimeUnit.SECONDS)
             .distinctUntilChanged()
             .flatMapSingle { query ->
-                getBookListUseCase.invoke(query)
-                    .transformToBookListData()
+                requestBookListUseCase.invoke(query)
             }
-            .subscribe({ list ->
-                _firstPageLiveData.value = list
-                _hideKeyboardLiveData.value = Unit
+            .subscribe({
+                viewModelScope.launch {
+                    _hideKeyboardFlow.emit(Unit)
+                }
             }, { e ->
                 Log.e("querySubject", "", e)
             })
             .let { disposable.add(it) }
 
-        requestNextPageSubject.filter { getBookListUseCase.isDisposed() }
+        requestNextPageSubject.filter { requestBookListUseCase.isDisposed() }
             .flatMapSingle {
-                getBookListUseCase.invoke()
-                    .transformToBookListData()
+                requestBookListUseCase.invoke()
             }
-            .subscribe({ list ->
-                _nextPageLiveData.value = list
+            .subscribe({
+                // do nothing
             }, { e ->
                 Log.e("requestNextPageSubject", "", e)
             })
             .let { disposable.add(it) }
+
+        getBookListUseCase.invoke(Unit)
+            .map { it.getOrNull() ?: emptyList() }
+            .flatMapSingle { bookList ->
+                getBookmarkedListUseCase.invoke(Unit)
+                    .map { result ->
+                        bookList to (result.getOrNull()?.map { it.isbn } ?: emptyList())
+                    }
+                    .first(bookList to emptyList())
+            }
+            .map { (bookList, bookmarkList) ->
+                bookList.map { model ->
+                    model.toBookListViewHolderData(
+                        bookmarked = bookmarkList.find { isbn ->
+                            isbn == model.isbn
+                        } != null
+                    )
+                }
+            }
+            .subscribe({ list ->
+                viewModelScope.launch {
+                    _pageListFlow.emit(list)
+                }
+            }, { e ->
+                Log.e("asdf", "", e)
+            }).let { disposable.add(it) }
     }
 
     override fun onCleared() {
@@ -75,25 +106,19 @@ class BookListSearchViewModel constructor(
         requestNextPageSubject.onNext(Unit)
     }
 
-}
+    fun onClickedItem(data: BookListViewHolderData) {
+        viewModelScope.launch {
+            _openDetailPageFlow.emit(data)
+        }
+    }
 
-@WorkerThread
-internal fun Single<Result<SearchResultEntity>>.transformToBookListData(): Single<List<BookListAdapter.BookListData>> {
-    return this.map { result ->
-        result.getOrNull()?.let { entity ->
-            entity.items.map { bookEntity ->
-                BookListItemViewHolder.Data(
-                    title = bookEntity.title,
-                    author = bookEntity.author,
-                    isbn = bookEntity.isbn,
-                    price = bookEntity.price,
-                    image = bookEntity.image,
-                    publisher = bookEntity.publisher,
-                    pubdate = bookEntity.pubdate,
-                    discount = bookEntity.discount,
-                    description = bookEntity.description
-                )
-            }
-        } ?: arrayListOf(BookListMessageViewHolder.MessageData(message = "Empty"))
+    fun onClickedBookmark(data: BookListViewHolderData) {
+        val toggledFlag = !data.isBookmarked
+        bookmarkUseCase.invoke(data.toModel(), toggledFlag)
+            .subscribe({
+
+            }, { e ->
+                Log.e("asdf", "", e)
+            }).let { disposable.add(it) }
     }
 }

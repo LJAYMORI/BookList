@@ -1,67 +1,40 @@
 package com.woody.search.ui
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.woody.search.BookListSearchCallback
 import com.woody.search.R
 import com.woody.search.databinding.FragmentBookListSearchBinding
-import com.woody.ui.adapter.BookListAdapter
-import com.woody.ui.adapter.InputListAdapter
-import com.woody.util.NotifyPositionScrollListener
-import com.woody.util.hideKeyboard
+import com.woody.ui.base.BaseFragment
+import com.woody.ui.keyboard.hideKeyboard
+import com.woody.ui.recyclerview.NotifyPositionScrollListener
+import com.woody.ui.recyclerview.adapter.BookListAdapter
+import com.woody.ui.recyclerview.adapter.InputListAdapter
+import com.woody.ui.recyclerview.viewholder.data.BookListViewHolderData
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class BookListSearchFragment : Fragment() {
+class BookListSearchFragment : BaseFragment() {
 
     companion object {
-        private const val KEY_DEFAULT_QUERY = "key_default_query"
-
-        fun newInstance(defaultQuery: String = "kotlin"): BookListSearchFragment {
-            return BookListSearchFragment().apply {
-                arguments = bundleOf(KEY_DEFAULT_QUERY to defaultQuery)
-            }
+        fun newInstance(): BookListSearchFragment {
+            return BookListSearchFragment()
         }
 
-        private const val TAG = "BookListSearchFragment"
-        private const val KEY_LAYOUT_MANAGER_SAVE_INSTANCE_STATE = "key_layout_manager_save_instance_state"
-        private const val KEY_ADAPTER_LIST = "key_adapter_list"
+        private const val KEY_LIST_SAVED_INSTANCE = "key_list_saved_instance"
+        private const val KEY_OLD_QUERY = "key_old_query"
+        private const val KEY_BOOK_ITEMS = "key_book_items"
     }
 
     private lateinit var binding: FragmentBookListSearchBinding
     private val viewModel: BookListSearchViewModel by viewModel()
 
-    private val inputAdapter: InputListAdapter by lazy {
-        InputListAdapter(
-            textChangedAction = { query ->
-                viewModel.search(query)
-            }
-        )
-    }
-
-    private val bookListAdapter: BookListAdapter by lazy {
-        BookListAdapter(
-            itemClickAction = { data ->
-                (activity as? BookListSearchCallback)?.onClickBookItem(
-                    title = data.title,
-                    author = data.author,
-                    isbn = data.isbn,
-                    price = data.price,
-                    image = data.image,
-                    publisher = data.publisher,
-                    pubdate = data.pubdate,
-                    discount = data.discount,
-                    description = data.description,
-                )
-            }
-        )
-    }
+    private lateinit var inputAdapter: InputListAdapter
+    private lateinit var bookListAdapter: BookListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,22 +47,61 @@ class BookListSearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (savedInstanceState == null) {
-            initView()
-            initViewModel()
-        }
+//        initView(savedInstanceState)
+//        initViewModel(savedInstanceState)
+        initView(null)
+        initViewModel(null)
     }
 
-    private fun initView() {
-        val defaultQuery = arguments?.getString(KEY_DEFAULT_QUERY) ?: ""
-        if (defaultQuery.isNotEmpty()) {
-            arguments?.remove(KEY_DEFAULT_QUERY)
-        }
-        inputAdapter.init(
-            query = defaultQuery,
-            hint = getString(R.string.book_list_input_hint)
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(
+            KEY_LIST_SAVED_INSTANCE,
+            binding.bookListSearchRecyclerView.layoutManager?.onSaveInstanceState()
         )
+        outState.putString(
+            KEY_OLD_QUERY,
+            inputAdapter.currentQuery
+        )
+        outState.putParcelableArrayList(
+            KEY_BOOK_ITEMS,
+            arrayListOf(*bookListAdapter.getBookListDataList().toTypedArray())
+        )
+    }
 
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+    }
+
+    private fun initView(savedInstanceState: Bundle?) {
+        inputAdapter = InputListAdapter(
+            textChangedAction = { query ->
+                viewModel.search(query)
+            }
+        ).apply {
+            init(
+                query = savedInstanceState?.getString(KEY_OLD_QUERY) ?: "",
+                hint = getString(R.string.book_list_input_hint)
+            )
+        }
+        bookListAdapter = BookListAdapter(
+            itemClickAction = { data ->
+                viewModel.onClickedItem(data)
+            },
+            bookmarkClickAction = { data ->
+                viewModel.onClickedBookmark(data)
+            }
+        ).apply {
+            savedInstanceState?.getParcelableArrayList<BookListViewHolderData>(KEY_BOOK_ITEMS)?.let {
+                setItems(it)
+            }
+        }
+
+        binding.bookListSearchRecyclerView.layoutManager = LinearLayoutManager(context).apply {
+            savedInstanceState?.getParcelable<Parcelable>(KEY_LIST_SAVED_INSTANCE)?.let {
+                onRestoreInstanceState(it)
+            }
+        }
         binding.bookListSearchRecyclerView.adapter = ConcatAdapter(inputAdapter, bookListAdapter)
         binding.bookListSearchRecyclerView.addOnScrollListener(
             NotifyPositionScrollListener {
@@ -98,21 +110,23 @@ class BookListSearchFragment : Fragment() {
         )
     }
 
-    private fun initViewModel() {
-        viewModel.firstPageLiveData.observe { list ->
-            bookListAdapter.setItems(list)
+    private fun initViewModel(savedInstanceState: Bundle?) {
+        repeatOnStarted {
+            viewModel.pageListFlow.collect { list ->
+                bookListAdapter.setItems(list)
+            }
         }
 
-        viewModel.nextPageLiveData.observe { list ->
-            bookListAdapter.addItems(list)
+        repeatOnStarted {
+            viewModel.hideKeyboardFlow.collect {
+                hideKeyboard()
+            }
         }
 
-        viewModel.hideKeyboardLiveData.observe {
-            hideKeyboard()
+        repeatOnStarted {
+            viewModel.openDetailPageFlow.collect { data ->
+                (activity as? BookListSearchCallback)?.onClickBookItem(data)
+            }
         }
-    }
-
-    private fun <T> LiveData<T>.observe(observer: Observer<in T>) {
-        this.observe(viewLifecycleOwner, observer)
     }
 }
