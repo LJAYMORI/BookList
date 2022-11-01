@@ -9,6 +9,7 @@ import com.woody.bookmark.BookmarkCallback
 import com.woody.bookmark.databinding.FragmentBookmarkBinding
 import com.woody.ui.base.BaseFragment
 import com.woody.ui.recyclerview.adapter.BookListAdapter
+import com.woody.ui.recyclerview.adapter.FooterAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BookmarkFragment : BaseFragment() {
@@ -33,6 +34,10 @@ class BookmarkFragment : BaseFragment() {
         )
     }
 
+    private val footerAdapter: FooterAdapter by lazy {
+        FooterAdapter()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,7 +54,7 @@ class BookmarkFragment : BaseFragment() {
     }
 
     private fun initView() {
-        binding.bookmarkRecyclerView.adapter = ConcatAdapter(bookListAdapter)
+        binding.bookmarkRecyclerView.adapter = ConcatAdapter(bookListAdapter, footerAdapter)
     }
 
     private fun initViewModel() {

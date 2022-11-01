@@ -14,7 +14,9 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class BookListSearchViewModel(
@@ -29,11 +31,16 @@ class BookListSearchViewModel(
     private val _pageListFlow = MutableSharedFlow<List<BookListViewHolderData>>()
     val pageListFlow = _pageListFlow.asSharedFlow()
 
+    private val _loadingFlow = MutableStateFlow(false)
+    val loadingFlow = _loadingFlow.asStateFlow()
+
     private val _hideKeyboardFlow = MutableSharedFlow<Unit>()
     val hideKeyboardFlow = _hideKeyboardFlow.asSharedFlow()
 
     private val _openDetailPageFlow = MutableSharedFlow<BookListViewHolderData>()
     val openDetailPageFlow = _openDetailPageFlow.asSharedFlow()
+
+
 
     private val querySubject = PublishSubject.create<String>()
     private val requestNextPageSubject = PublishSubject.create<Unit>()
@@ -46,9 +53,13 @@ class BookListSearchViewModel(
             .flatMapSingle { query ->
                 requestBookListUseCase.invoke(query)
             }
-            .subscribe({
+            .subscribe({ result ->
+                val resultModel = result.getOrNull()
                 viewModelScope.launch {
                     _hideKeyboardFlow.emit(Unit)
+                    resultModel?.run {
+                        _loadingFlow.emit(total != items.size)
+                    }
                 }
             }, { e ->
                 Log.e("querySubject", "", e)
@@ -59,8 +70,11 @@ class BookListSearchViewModel(
             .flatMapSingle {
                 requestBookListUseCase.invoke()
             }
-            .subscribe({
-                // do nothing
+            .subscribe({ result ->
+                val resultModel = result.getOrNull()
+                viewModelScope.launch {
+                    _loadingFlow.emit(resultModel?.items?.size?.let { it > 0 } ?: false)
+                }
             }, { e ->
                 Log.e("requestNextPageSubject", "", e)
             })

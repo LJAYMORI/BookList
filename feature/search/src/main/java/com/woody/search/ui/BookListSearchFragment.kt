@@ -14,6 +14,7 @@ import com.woody.ui.base.BaseFragment
 import com.woody.ui.keyboard.hideKeyboard
 import com.woody.ui.recyclerview.NotifyPositionScrollListener
 import com.woody.ui.recyclerview.adapter.BookListAdapter
+import com.woody.ui.recyclerview.adapter.FooterAdapter
 import com.woody.ui.recyclerview.adapter.InputListAdapter
 import com.woody.ui.recyclerview.viewholder.data.BookListViewHolderData
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -35,6 +36,7 @@ class BookListSearchFragment : BaseFragment() {
 
     private lateinit var inputAdapter: InputListAdapter
     private lateinit var bookListAdapter: BookListAdapter
+    private lateinit var footerAdapter: FooterAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -97,12 +99,18 @@ class BookListSearchFragment : BaseFragment() {
             }
         }
 
+        footerAdapter = FooterAdapter()
+
         binding.bookListSearchRecyclerView.layoutManager = LinearLayoutManager(context).apply {
             savedInstanceState?.getParcelable<Parcelable>(KEY_LIST_SAVED_INSTANCE)?.let {
                 onRestoreInstanceState(it)
             }
         }
-        binding.bookListSearchRecyclerView.adapter = ConcatAdapter(inputAdapter, bookListAdapter)
+        binding.bookListSearchRecyclerView.adapter = ConcatAdapter(
+            inputAdapter,
+            bookListAdapter,
+            footerAdapter
+        )
         binding.bookListSearchRecyclerView.addOnScrollListener(
             NotifyPositionScrollListener {
                 viewModel.requestNextPage()
@@ -114,6 +122,12 @@ class BookListSearchFragment : BaseFragment() {
         repeatOnStarted {
             viewModel.pageListFlow.collect { list ->
                 bookListAdapter.setItems(list)
+            }
+        }
+
+        repeatOnStarted {
+            viewModel.loadingFlow.collect { visible ->
+                footerAdapter.visibleLoading(visible)
             }
         }
 

@@ -8,10 +8,11 @@ import com.woody.ui.databinding.ItemBookBinding
 import com.woody.ui.recyclerview.diffutil.DefaultViewDataDiffUtil
 import com.woody.ui.recyclerview.viewholder.BaseViewHolder
 import com.woody.ui.recyclerview.viewholder.BookListItemViewHolder
-import com.woody.ui.recyclerview.viewholder.EmptyViewHolder
+import com.woody.ui.recyclerview.viewholder.FooterEndViewHolder
 import com.woody.ui.recyclerview.viewholder.data.ViewHolderData
 import com.woody.ui.recyclerview.viewholder.ViewHolderViewType
 import com.woody.ui.recyclerview.viewholder.data.BookListViewHolderData
+import com.woody.ui.recyclerview.viewholder.data.UnknownViewHolder
 
 class BookListAdapter(
     private val itemClickAction: (BookListViewHolderData) -> Unit,
@@ -60,7 +61,7 @@ class BookListAdapter(
                 )
             }
             ViewType.UNKNOWN -> {
-                EmptyViewHolder(parent.context)
+                UnknownViewHolder(parent.context)
             }
         }
     }

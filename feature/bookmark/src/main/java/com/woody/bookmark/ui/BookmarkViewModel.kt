@@ -20,6 +20,9 @@ class BookmarkViewModel(
     private val _bookmarkedListFlow = MutableSharedFlow<List<BookListViewHolderData>>()
     val bookmarkedListFlow = _bookmarkedListFlow.asSharedFlow()
 
+    private val _footerLoadingFlow = MutableSharedFlow<Boolean>()
+    val footerLoadingFlow = _footerLoadingFlow.asSharedFlow()
+
     private val _openBookDetailFlow = MutableSharedFlow<BookListViewHolderData>()
     val openBookDetailFlow = _openBookDetailFlow.asSharedFlow()
 
